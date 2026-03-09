@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/clipboard/clipboard.min.js"></script>
+<script src="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/quarto-html/tabby.min.js"></script>
+<script src="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/quarto-html/popper.min.js"></script>
+<script src="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.6.42">
+
+  <meta name="author" content="Adrien Wartelle">
+  <title>FIE-2-IMTNS-2 Course 3 Slides</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/revealjs/dist/theme/quarto-2f366650f320edcfcf53d73c80250a32.css">
+  <link href="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <link href="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+
+  <script src="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+
+  <script src="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/viz-1.8.2/viz.js"></script>
+
+  <link href="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
+
+  <script src="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/grViz-binding-1.0.11/grViz.js"></script>
+
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">FIE-2-IMTNS-2 Course 3 Slides</h1>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Adrien Wartelle 
+</div>
+</div>
+</div>
+
+</section>
+<section class="slide level2">
+
+<!-- <script src="plugin/math/math.js"></script> -->
+<script>
+  Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+RevealMath.KaTeX] });
+  container.normalize();
+</script>
+</section>
+<section>
+<section id="e.c.-outils-danalyse-et-de-modélisation-des-flux-en-santé" class="title-slide slide level1 center">
+<h1>E.C. Outils d’Analyse et de Modélisation des Flux en Santé</h1>
+<p><strong>U.E. E4-2-IMTNS-1 Ingénierie et Management de la Transformation Numérique en Santé</strong></p>
+<p>2025-2026</p>
+<p>Adrien Wartelle (<a href="mailto:adrien.wartelle@univ-jfc.fr" class="email">adrien.wartelle@univ-jfc.fr</a>)</p>
+</section>
+<section id="objectifs-du-module" class="slide level2">
+<h2>Objectifs du module</h2>
+<ul>
+<li><p>Pouvoir, savoir :</p>
+<ul>
+<li><p>Analyser un <strong>jeu de données</strong> lié à un <strong>processus</strong> de flux en santé grâce aux fondements de la <strong>science des données</strong></p></li>
+<li><p>Mettre en place des <strong>modèles de file d’attente</strong> analytiques et de simulation</p></li>
+<li><p>Entamer une <strong>modélisation axée sur les données</strong> grâce au Process Mining</p></li>
+<li><p>Suivre une <strong>démarche scientifique et critique</strong> fondée sur une validation conceptuelle et numérique</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="références-complémentaires-1" class="slide level2">
+<h2>Références complémentaires (1)</h2>
+<ul>
+<li><p>Référence pour l’analyse :</p>
+<ul>
+<li>Wickham, H., &amp; Grolemund, G: R for data science (Vol. 2). Sebastopol : O’Reilly. (2017).</li>
+</ul></li>
+</ul>
+<!--<img src="illustrations/R4DataScience.png" alt="R for Data Science" width="600"/>-->
+
+<img data-src="illustrations/R4DataScience.png" title="R for Data Science" class="r-stretch quarto-figure-center"><p class="caption"><em>R for Data Science</em></p></section>
+<section id="références-complémentaires-2" class="slide level2">
+<h2>Références complémentaires (2)</h2>
+<ul>
+<li><p>Référence pour la modélisation :</p>
+<ul>
+<li>Shortle, J.F., Thompson, J.M., Gross, D., Harris, C.M.: Fundamentals of Queueing Theory: Fifth Edition. John Wiley &amp; Sons, Inc.&nbsp;(2017).</li>
+</ul></li>
+</ul>
+<!--<img src="illustrations/R4DataScience.png" alt="R for Data Science" width="600"/>-->
+
+<img data-src="illustrations/QueueingTheory.png" title="Fundamentals of Queueing Theory" class="r-stretch quarto-figure-center"><p class="caption"><em>Fundamentals of Queueing Theory</em></p></section>
+<section id="références-complémentaires-3" class="slide level2">
+<h2>Références complémentaires (3)</h2>
+<ul>
+<li><p>Articles de référence pour la modélisation du système de soins :</p>
+<ul>
+<li><p>Badr, S., Nyce, A., Awan, T., Cortes, D., Mowdawalla, C., Rachoin, J.-S.: Measures of emergency department crowding, a systematic review : how to make sense of a long list Open Access Emergency Medicine, 5–14 (2022)</p></li>
+<li><p>Bhattacharjee P, Ray PK. Patient flow modelling and performance analysis of healthcare delivery processes in hospitals: A review and reflections. Computers &amp; Industrial Engineering. 2014;78:299-312</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="références-complémentaires-4" class="slide level2">
+<h2>Références complémentaires (4)</h2>
+<ul>
+<li><p>Articles de référence pour la modélisation du système de soins :</p>
+<ul>
+<li><p>Whitt, W., &amp; Zhang, X. A data-driven model of an emergency department. Operations Research for Health Care, 12, 1-15 (2017)</p></li>
+<li><p>Wartelle A, Mourad-Chehade F, Yalaoui F, Laplanche D, Sanchez S. Data-driven queueing modelling: a simulation case study of emergency department crowding. BMJ Health &amp; Care Informatics. 2026;33:e101462. https://doi.org/10.1136/bmjhci-2025-101462</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="références-complémentaires-5" class="slide level2">
+<h2>Références complémentaires (5)</h2>
+<ul>
+<li><p>Articles de référence pour la modélisation du système de soins :</p>
+<ul>
+<li>Wartelle, A., Mourad-Chehade, F., Yalaoui, F. et al.&nbsp;Changing the perspective of system crowding evaluation using a new congestion measure: application to the Emergency Department. Oper Res Int J 24, 53 (2024). https://doi.org/10.1007/s12351-024-00855-4</li>
+</ul></li>
+<li><p>Internet</p>
+<ul>
+<li><p><a href="https://education.rstudio.com/learn/beginner/" class="uri">https://education.rstudio.com/learn/beginner/</a></p></li>
+<li><p><a href="https://anylogic.help/tutorials/index.html" class="uri">https://anylogic.help/tutorials/index.html</a></p></li>
+</ul></li>
+</ul>
+</section>
+<section id="organisation-séances-hybrides" class="slide level2">
+<h2>Organisation : Séances (hybrides)</h2>
+<div style="font-size: 20px;">
+<table class="caption-top" style="width:100%;">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 26%">
+<col style="width: 24%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Date</th>
+<th style="text-align: left;">Modalité</th>
+<th style="text-align: left;">Contenu</th>
+<th style="text-align: left;">Evaluation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Mardi 13/01</td>
+<td style="text-align: left;">2h CM + 2h TD/TP</td>
+<td style="text-align: left;">Introduction au module et à l’analyse (EDA)</td>
+<td style="text-align: left;">Début devoir 1 <br> (pour le 25/01)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lundi 19/01</td>
+<td style="text-align: left;">2h CM + 2h TD/TP</td>
+<td style="text-align: left;">Introduction à la modélisation des flux par file d’attente</td>
+<td style="text-align: left;">Début devoir 2 <br> (pour le 01/02)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Mardi 27/01</td>
+<td style="text-align: left;">2h CM + 2h TD/TP</td>
+<td style="text-align: left;">Simulation 1 sous Anylogic</td>
+<td style="text-align: left;">Début devoir 3 <br> (pour le 08/02)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Mardi 03/02</td>
+<td style="text-align: left;">2h CM + 2h TD/TP</td>
+<td style="text-align: left;">Process Mining et Simulation 2 sous Anylogic</td>
+<td style="text-align: left;">Début devoir 4 <br> (pour le 23/03)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Mardi 10/02</td>
+<td style="text-align: left;">4h TD/TP</td>
+<td style="text-align: left;">Démarche de validation et correction</td>
+<td style="text-align: left;">Correction devoir 1 à 3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Mardi 23/03</td>
+<td style="text-align: left;">Soutenances (2h)</td>
+<td style="text-align: left;">Évaluation et correction</td>
+<td style="text-align: left;">Examen (devoir 4 et +)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="organisation-modalité-dévaluation" class="slide level2">
+<h2>Organisation : Modalité d’évaluation</h2>
+<ul>
+<li><p>Devoir 1 : Livrable <strong>numérique, individuel</strong> de coefficient <strong>20%</strong></p></li>
+<li><p>Devoir 2 : Livrable <strong>manuscrit / numérique, individuel</strong> de coefficient <strong>20%</strong></p></li>
+<li><p>Devoir 3 : Livrable <strong>numérique</strong>, en <strong>groupe de 2</strong> de coefficient <strong>30%</strong></p></li>
+<li><p>Devoir 4 : Livrables numérique / manuscrits / oraux, en <strong>groupe de 2</strong> de coefficient <strong>30%</strong></p></li>
+</ul>
+</section></section>
+<section>
+<section id="formulation-du-cadre-mathématique" class="title-slide slide level1 center">
+<h1>Formulation du cadre mathématique</h1>
+<p>Expliciter concrètement un modèle quantitatif de flux</p>
+</section>
+<section id="en-quoi-cela-consiste" class="slide level2">
+<h2>En quoi cela consiste</h2>
+<p>Avant toute hypothèse, théorème, résultat, une <strong>théorie</strong> doit s’inscrire dans un <strong>cadre mathématique</strong> de <strong>notations</strong>, <strong>définitions</strong> et <strong>propriétés</strong>.</p>
+<p>Dans notre contexte, celui-ci se définit par l’ensemble des <strong>notations</strong> et de la caractérisation mathématique générale des <strong>états</strong>, <strong>comportements</strong> et <strong>mesures de performance</strong> sous jacent du modèle.</p>
+</section>
+<section id="objectifs" class="slide level2">
+<h2>Objectifs</h2>
+<p>Trop souvent délaissée par les ingénieurs et les informaticiens, la modélisation mathématique est <strong>primordiale</strong> pour :</p>
+<ul>
+<li><p>Décrire avec <strong>aucune ambiguïté</strong> les états, les comportements et les mesures de performances sous jacent du modèle</p></li>
+<li><p>Établir une abstraction facilitant la <strong>réflexion sur le modèle</strong></p></li>
+<li><p>Faciliter <strong>l’implémentation de l’évaluation</strong> du système analytiquement ou numériquement</p></li>
+</ul>
+</section>
+<section id="cadre-général-dun-modèle-à-1-station" class="slide level2">
+<h2>Cadre général d’un modèle à 1 station</h2>
+<div style="font-size: 26px;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 52%">
+<col style="width: 47%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Notion mathématique</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(t \in \mathbb{R}^+\)</span></td>
+<td style="text-align: left;">Variable de temps</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(m \in \mathbb{N}\)</span></td>
+<td style="text-align: left;">Indice de client (patient) par ordre d’arrivée</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(ta_m, td_m \in \mathbb{R}^+\)</span></td>
+<td style="text-align: left;">Temps d’arrivée et de départ du patient m dans la station</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(A(t) : \mathbb{R}^+ \to \mathbb{N}\)</span></td>
+<td style="text-align: left;">Processus de comptage d’arrivée de la station</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(A(t) \equiv \sum_{m\in\mathbb{N}} \mathbb{I}_{ta_m \in [0,t]}\)</span></td>
+<td style="text-align: left;">Relation avec les temps d’arrivées</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(D(t) : \mathbb{R}^+ \to \mathbb{N}\)</span></td>
+<td style="text-align: left;">Processus de comptage de départ de la station</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(D(t) \equiv \sum_{m\in\mathbb{N}} \mathbb{I}_{td_m \in [0,t]}\)</span></td>
+<td style="text-align: left;">Relation avec les temps de départ</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="distinction-file-serveur" class="slide level2">
+<h2>Distinction file, serveur</h2>
+<div style="font-size: 26px;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 52%">
+<col style="width: 47%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Notion mathématique</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(tdq_m \in \mathbb{R}^+\)</span></td>
+<td style="text-align: left;">Temps de départ de la file d’attente</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(D_q(t) : \mathbb{R}^+ \to \mathbb{N}\)</span></td>
+<td style="text-align: left;">Processus de comptage de départ de la file d’attente</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(D_q(t) \equiv \sum_{m\in\mathbb{N}} \mathbb{I}_{tdq_m \in [0,t]}\)</span></td>
+<td style="text-align: left;">Relation avec les temps de départ de la file d’attente</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="mesures-de-performances-locales" class="slide level2">
+<h2>Mesures de performances locales</h2>
+<div style="font-size: 26px;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 42%">
+<col style="width: 57%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Notion mathématique</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(l(t) \equiv A(t) - D(t) = l_q(t) + l_s(t)\)</span></td>
+<td style="text-align: left;">Niveau d’occupation au temps <span class="math inline">\(t\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(l_q(t) \equiv A(t) - D_q(t)\)</span></td>
+<td style="text-align: left;">Niveau d’occupation en file au temps <span class="math inline">\(t\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(l_s(t) \equiv D_q(t) - D(t)\)</span></td>
+<td style="text-align: left;">Niveau d’occupation en serveur au temps <span class="math inline">\(t\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(w_m \equiv td_m - ta_m = wq_m + s_m\)</span></td>
+<td style="text-align: left;">Temps d’attente / séjour du patient <span class="math inline">\(m\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(wq_m \equiv tdq_m - ta_m\)</span></td>
+<td style="text-align: left;">Temps d’attente en file du patient <span class="math inline">\(m\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(s_m \equiv td_m - tdq_m\)</span></td>
+<td style="text-align: left;">Temps de service du patient <span class="math inline">\(m\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="mesures-de-performances-globales-1" class="slide level2">
+<h2>Mesures de performances globales (1)</h2>
+<div style="font-size: 26px;">
+<p><strong>Performances moyennes</strong> :</p>
+<ul>
+<li><p><span class="math inline">\(L([t_0,t_1]) \equiv \frac{1}{t_1-t_0}\int_{t_0}^{t_1}l(t)dt \underset{t_1\to +\infty}{\longrightarrow} L = L_q + L_s\)</span></p>
+<ul>
+<li>(définition similaire pour <span class="math inline">\(L_q\)</span> et <span class="math inline">\(L_s\)</span>)</li>
+</ul></li>
+<li><p><span class="math inline">\(W = \lim_{N\to +\infty}\frac{1}{N}\sum_{m\leq N} w_m = W_q + S\)</span></p>
+<ul>
+<li>(définition similaire pour <span class="math inline">\(W_q\)</span> et <span class="math inline">\(S\)</span>)</li>
+</ul></li>
+<li><p><span class="math inline">\(W_d([t_0,t_1]) = \frac{1}{\sum_{m \in \mathbb{N}} \mathbb{I}_{td \in [t_0, t_1]}} \sum_{m \in \mathbb{N}} \mathbb{1}_{td \in [t_0, t_1]} w_m \underset{t_1\to +\infty}{\longrightarrow} W\)</span></p>
+<ul>
+<li>(définition similaire pour <span class="math inline">\(W_{d,s})\)</span></li>
+</ul></li>
+<li><p><span class="math inline">\(W_a([t_0,t_1]) = \frac{1}{\sum_{m \in \mathbb{N}} \mathbb{I}_{ta \in [t_0, t_1]}} \sum_{m \in \mathbb{N}} \mathbb{1}_{ta \in [t_0, t_1]} w_m \underset{t_1\to +\infty}{\longrightarrow} W\)</span></p>
+<ul>
+<li>(définition similaire pour <span class="math inline">\(W_{a,s}\)</span>)</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="mesures-de-performances-globales-2" class="slide level2">
+<h2>Mesures de performances globales (2)</h2>
+<div style="font-size: 26px;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 65%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Notion mathématique</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(\lambda([t_0,t_1]) \equiv \frac{A(t_1) - A(t_0)}{t_1-t_0}  \underset{t_1\to +\infty}{\longrightarrow} \lambda\)</span></td>
+<td style="text-align: left;">Taux d’arrivée moyen</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(\delta([t_0,t_1]) \equiv \frac{D(t_1) - D(t_0)}{t_1-t_0}  \underset{t_1\to +\infty}{\longrightarrow} \delta\)</span></td>
+<td style="text-align: left;">Taux de départ moyen</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(\mu([t_0,t_1]) \equiv \frac{1}{W_{d,s}([t_0,t_1])}  \underset{t_1\to +\infty}{\longrightarrow} \mu\)</span></td>
+<td style="text-align: left;">Taux de service moyen</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="mesures-de-performances-globales-3" class="slide level2">
+<h2>Mesures de performances globales (3)</h2>
+
+<img data-src="illustrations/MesuresPerf.png" title="Visualisation des mesures de performances d'une station de file d'attente" class="r-stretch quarto-figure-center"><p class="caption"><em>Visualisation des mesures de performances d’une station de file d’attente</em></p></section>
+<section id="extension-de-la-modélisation-1" class="slide level2">
+<h2>Extension de la modélisation (1)</h2>
+<div style="font-size: 26px;">
+<ul>
+<li><p>Cette formulation peut facilement être <strong>étendue</strong> à de nombreux cas :</p>
+<ul>
+<li><p><strong>Multiples serveurs</strong></p></li>
+<li><p><strong>Multiples file d’attente</strong></p></li>
+<li><p><strong>Comportement spéciaux</strong> de client / patient de départ avant service (<span class="math inline">\(D_{others}(t)\)</span>)</p></li>
+<li><p><strong>Multiples classes</strong> de client / patient <span class="math inline">\(c_m \in \{1..K\}\)</span></p></li>
+<li><p><strong>Multiples stations</strong> <span class="math inline">\(i \in \{1..I\}\)</span></p></li>
+<li><p><strong>Approximations</strong> discrètes <span class="math inline">\(A_n \sim A(t)\)</span> et fluides <span class="math inline">\(A(t_1) - A(t_0) \in \mathbb{R}^+\)</span></p></li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="extension-de-la-modélisation-2" class="slide level2">
+<h2>Extension de la modélisation (2)</h2>
+<p>Dans le cadre de <strong>multiples stations</strong>, il faudra aussi modéliser les comportements de <strong>parcours patient</strong> :</p>
+<ul>
+<li><p>En intégrant des <strong>processus de transitions <span class="math inline">\(D_{i_1,i_2}(t)\)</span></strong> des clients / patients entre stations <span class="math inline">\(i_1\)</span> et <span class="math inline">\(i_2\)</span></p></li>
+<li><p>L’arrivée à une station peut alors s’écrire <span class="math inline">\(A_i(t) = \sum_{i_0\in \{1..I\}} D_{i_0,i}(t)\)</span></p></li>
+</ul>
+</section>
+<section id="extension-de-la-modélisation-3" class="slide level2">
+<h2>Extension de la modélisation (3)</h2>
+<ul>
+<li><p>Ces <strong>processus de transitions</strong> pourront être modélisés de 2 manières :</p>
+<ul>
+<li><p>par des <strong>probabilités de transitions</strong> <span class="math inline">\(p_{i_1,i_2}\)</span> (qui peuvent être fonction des classes des patients, du temps …)</p></li>
+<li><p>ou directement par des <strong>probabilités de circuits patients</strong> <span class="math inline">\(u_m\)</span> : <span class="math inline">\(\mathbb{P}(u_m = (i_1,i_2,...,i_{|u_m|}))\)</span></p></li>
+</ul></li>
+</ul>
+</section>
+<section id="extension-de-la-modélisation-4" class="slide level2">
+<h2>Extension de la modélisation (4)</h2>
+<p>L’utilisation d’approximations est parfois utile <sup>1</sup> :</p>
+<ul>
+<li><p>Les <strong>modèles fluides</strong> permettent une évaluation analytiques directe qui approxime bien le comportement de certaines files d’attentes comme les modèles <span class="math inline">\(M/M/+\infty\)</span> ou <span class="math inline">\(G/GI/+\infty\)</span> avec une très forte congestion <span class="math inline">\(\frac{\lambda}{\mu}\)</span></p></li>
+<li><p>Les <strong>modèles discrets</strong> permettent une modélisation plus fine des évènements de départs et d’arrivées en les générant par probabilités d’occurrence dans un intervalle de temps plutôt que par un temps</p></li>
+</ul>
+<aside><ol class="aside-footnotes"><li id="fn1"><p>Voir les trois articles Wartelle et al.&nbsp;en références</p></li></ol></aside></section>
+<section id="nous-sommes-enfin-prêt-à-évaluer" class="slide level2">
+<h2>Nous sommes enfin prêt à évaluer !</h2>
+<p>Une fois seulement le cadre mathématique <strong>clairement formulé</strong> peut-on commencer à <strong>évaluer un modèle</strong>.</p>
+<p>Dans la pratique, cette <strong>étape</strong> est trop souvent <strong>sautée par précipitation</strong> et on peut aboutir à des <strong>confusions</strong> sur ce que le modèle représente, sur son fonctionnement et à une <strong>évaluation inadaptée</strong> avec des outils trop complexes ou trop simples.</p>
+</section></section>
+<section>
+<section id="evaluation-par-la-théorie-des-files-dattente" class="title-slide slide level1 center">
+<h1>Evaluation par la théorie des files d’attente</h1>
+<p>Dérivée de la théorie de Markov</p>
+</section>
+<section id="loi-de-little-1" class="slide level2">
+<h2>Loi de Little (1)</h2>
+<ul>
+<li>Résultat (le plus) <strong>fondamental</strong> reliant l’occupation au temps d’attente <strong>asymptotiques</strong></li>
+</ul>
+<p><span class="math display">\[ L = \lambda W \]</span> Valable dès que : <span class="math inline">\(L&lt;+\infty\)</span>, <span class="math inline">\(W&lt;+\infty\)</span> et <span class="math inline">\(\lambda&lt;+\infty\)</span></p>
+</section>
+<section id="loi-de-little-2" class="slide level2">
+<h2>Loi de Little (2)</h2>
+
+<img data-src="illustrations/Little.png" title="Illustration de la loi de Little" class="r-stretch quarto-figure-center"><p class="caption">Illustration de la loi de Little</p></section>
+<section id="loi-de-little-3" class="slide level2">
+<h2>Loi de Little (3)</h2>
+<p>Eléments de compréhension du résultat :</p>
+<p><span class="math display">\[L = \lim_{t \to + \infty} \frac{1}{t} \sum_m \mathbb{I}_{ta_m &lt; t} (\min(td_m,t) - ta_m)\]</span></p>
+<p><span class="math display">\[ \lambda = \lim_{t \to +\infty} \frac{1}{t}\sum_m \mathbb{I}_{ta_m &lt; t}\]</span></p>
+<p><span class="math display">\[W = \lim_{t \to + \infty} \frac{1}{\sum_m \mathbb{I}_{td_m &lt; t}}\sum_m \mathbb{I}_{td_m &lt; t} (td_m - ta_m)\]</span></p>
+</section>
+<section id="les-processus-de-markov-1" class="slide level2">
+<h2>Les processus de Markov (1)</h2>
+<p>La théorie des files d’attente repose en grande partie sur la <strong>théorie des processus de Markov</strong>.</p>
+<p>Un <strong>processus de Markov</strong> est un processus stochastique (aléatoire) qui possède une propriété fondamentale : <strong>son futur ne dépend que de son état présent, et non de son état passé</strong>. En d’autres termes, pour prédire l’avenir du système, la connaissance de <strong>l’état actuel</strong> est suffisante.</p>
+</section>
+<section id="les-processus-de-markov-2" class="slide level2">
+<h2>Les processus de Markov (2)</h2>
+<ul>
+<li><p>Le cadre mathématique</p>
+<ul>
+<li>Soit <span class="math inline">\((\Omega, \mathcal{F}, P)\)</span> un espace de probabilité. Un processus de Markov est une famille de variables aléatoires <span class="math inline">\((X_t)_{t \in T}\)</span> (souvent <span class="math inline">\(T = \mathbb{R}^+\)</span>) à valeurs dans un ensemble <span class="math inline">\(E\)</span>, appelé <strong>espace d’états</strong> (exemple : <span class="math inline">\(\mathbb{N}\)</span>).</li>
+</ul></li>
+</ul>
+</section>
+<section id="les-processus-de-markov-3" class="slide level2">
+<h2>Les processus de Markov (3)</h2>
+<ul>
+<li><p>Le cadre mathématique</p>
+<ul>
+<li><p><strong><span class="math inline">\(T\)</span></strong> est l’ensemble des temps (souvent <span class="math inline">\(\mathbb{N}\)</span> pour le temps discret ou <span class="math inline">\([0, +\infty[\)</span> pour le temps continu). Ici, on se place dans le <strong>cas continu</strong>.</p></li>
+<li><p><strong><span class="math inline">\(E\)</span></strong> peut être fini, dénombrable (chaînes de Markov) ou continu (processus de diffusion). Ici, on se place dans le <strong>cas discret</strong>.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="les-processus-de-markov-4" class="slide level2">
+<h2>Les processus de Markov (4)</h2>
+<p>Le processus <span class="math inline">\((X_t)\)</span> est un processus de Markov si, pour tous temps <span class="math inline">\(s, t\)</span> tels que <span class="math inline">\(0 \le s &lt; t\)</span>, et pour tout ensemble mesurable <span class="math inline">\(B \subset E\)</span>, on a :</p>
+<p><span class="math display">\[ \forall s, t\ /\ 0 \le s &lt; t,\ P(X_t \in B \mid \mathcal{F}_s) = P(X_t \in B \mid X_s)\]</span> En résumé, connaître l’ensemble des états liés à <span class="math inline">\(\mathcal{F}_s\)</span>, jusqu’à l’instant présent <span class="math inline">\(s\)</span>, ne donne pas plus d’information que l’état présent <span class="math inline">\(X_s\)</span>.</p>
+</section>
+<section id="les-processus-de-markov-5" class="slide level2">
+<h2>Les processus de Markov (5)</h2>
+<ul>
+<li><p>Propriété sur la <strong>Dépendance locale</strong> :</p>
+<ul>
+<li>La probabilité que le processus soit dans un état futur <span class="math inline">\(B\)</span> au temps <span class="math inline">\(t\)</span>, sachant tout son historique jusqu’au temps <span class="math inline">\(s\)</span>, ne dépend en réalité que de sa position / son état exacte au temps <span class="math inline">\(s\)</span>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="les-processus-de-markov-6" class="slide level2">
+<h2>Les processus de Markov (6)</h2>
+<ul>
+<li><p>Propriété sur la <strong>Filtration (<span class="math inline">\(\mathcal{F}_s\)</span>)</strong> :</p>
+<ul>
+<li>Elle formalise “le passé”. Dire que le processus est de Markov revient à dire que la connaissance de la tribu <span class="math inline">\(\mathcal{F}_s\)</span> n’apporte pas plus d’information que la seule connaissance de la variable <span class="math inline">\(X_s\)</span>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="les-processus-de-markov-7" class="slide level2">
+<h2>Les processus de Markov (7)</h2>
+<ul>
+<li><p>Propriétés de <strong>Trajectoire</strong> en <strong>temps continu</strong> :</p>
+<ul>
+<li><p><strong>Càdlàg :</strong> “Continue à droite, limite à gauche”. Cela signifie que le processus peut faire des sauts, mais qu’il est bien défini juste avant et juste après chaque changement. (Valable pour juste pour les procesus de Markov)</p></li>
+<li><p><strong>Propriété de Markov Forte :</strong> Le processus reste Markovien même si on l’arrête à un temps aléatoire (appelé “temps d’arrêt”), comme le premier instant où il entre dans une zone donnée.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="les-processus-de-markov-8" class="slide level2">
+<h2>Les processus de Markov (8)</h2>
+<ul>
+<li>Comparaison <strong>Temps Discret</strong> vs <strong>Temps Continu</strong></li>
+</ul>
+<div style="font-size: 26px;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Caractéristique</th>
+<th style="text-align: left;">Temps Discret (<span class="math inline">\(n\)</span>)</th>
+<th style="text-align: left;">Temps Continu (<span class="math inline">\(t\)</span>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Évolution</strong></td>
+<td style="text-align: left;">Matrice de transition <span class="math inline">\(P\)</span></td>
+<td style="text-align: left;">Semi-groupe <span class="math inline">\((P_t)_{t \ge 0}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Dynamique</strong></td>
+<td style="text-align: left;"><span class="math inline">\(X_{n+1} = f(X_n, \epsilon_n)\)</span></td>
+<td style="text-align: left;">Générateur infinitésimal <span class="math inline">\(Q\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Équation clé</strong></td>
+<td style="text-align: left;"><span class="math inline">\(P^n = P \cdot P \dots P\)</span></td>
+<td style="text-align: left;">Équations de Kolmogorov (Forward/Backward)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="les-processus-de-markov-9" class="slide level2">
+<h2>Les processus de Markov (9)</h2>
+<p>On note <strong><span class="math inline">\(\mathcal{p}(t) = (p_0(t) ... p_i(t) ...)^t\)</span></strong> la <strong>probabilité d’état</strong> des états <strong>i</strong> à l’instant <em>t</em>.</p>
+<p>Pour un processus de Markov <strong>homogène</strong>, la <strong>probabilité de transition</strong> ne dépend que de l’écart de temps <span class="math inline">\(h = t - s\)</span>. On la définit par :</p>
+<p><span class="math display">\[P_h(x, z) = P(X_{s+h} = z \mid X_s = x)\]</span></p>
+</section>
+<section id="les-processus-de-markov-10" class="slide level2">
+<h2>Les processus de Markov (10)</h2>
+<p>Ces probabilités respectent l’<strong>équation de Chapman-Kolmogorov</strong>, qui stipule que pour passer de <span class="math inline">\(x\)</span> à <span class="math inline">\(z\)</span> en un temps <span class="math inline">\(t+s\)</span>, on doit passer par un état intermédiaire <span class="math inline">\(y\)</span> au temps <span class="math inline">\(t\)</span> :</p>
+<p><span class="math display">\[P_{t+s}(x, z) = \sum_{y \in E} P_s(y, z) \, P_t(x, y)\]</span></p>
+</section>
+<section id="les-processus-de-markov-11" class="slide level2">
+<h2>Les processus de Markov (11)</h2>
+<p>Contrairement au temps discret où l’on utilise une <strong>matrice de transition</strong>, le temps continu se caractérise par ce qui se passe sur un <strong>intervalle de temps “infiniment petit”</strong>. La caractérisation des <strong>dynamiques de transition</strong> doit se faire <strong>relativement au temps</strong>.</p>
+<p>Dans le cas d’un <strong>espace d’états discret <span class="math inline">\(E\)</span></strong>, le générateur est une matrice <strong><span class="math inline">\(Q = (q_{ij})_{i, j \in E}\)</span></strong> (souvent appelée matrice de taux ou matrice d’intensité) qui régit la <strong>dynamique instantanée du processus</strong>.</p>
+</section>
+<section id="les-processus-de-markov-12" class="slide level2">
+<h2>Les processus de Markov (12)</h2>
+<ul>
+<li><p>Définition et Construction</p>
+<ul>
+<li>Le générateur <span class="math inline">\(Q\)</span> représente la dérivée de la probabilité de transition <span class="math inline">\(P_t\)</span> à l’origine (<span class="math inline">\(t=0\)</span>) :</li>
+</ul></li>
+</ul>
+<p><span class="math display">\[Q = \lim_{h \to 0^+} \frac{P_h - P_0}{h}\]</span></p>
+</section>
+<section id="les-processus-de-markov-13" class="slide level2">
+<h2>Les processus de Markov (13)</h2>
+<p>Pour chaque paire d’états <span class="math inline">\((i, j) \in E^2\)</span> :</p>
+<ul>
+<li><p><strong>Taux de transition (<span class="math inline">\(i \neq j\)</span>) :</strong> <span class="math inline">\(q_{ij} \ge 0\)</span> est la <strong>“vitesse”</strong> à laquelle le processus saute de <span class="math inline">\(i\)</span> vers <span class="math inline">\(j\)</span>.</p></li>
+<li><p><strong>Taux de conservation (<span class="math inline">\(i = j\)</span>) :</strong> <span class="math inline">\(q_{ii} = - \sum_{j \neq i} q_{ij}\)</span>.</p></li>
+</ul>
+</section>
+<section id="les-processus-de-markov-14" class="slide level2">
+<h2>Les processus de Markov (14)</h2>
+<p>Grâce à la <strong>propriété de Markov</strong>, on a :</p>
+<p><span class="math display">\[\frac{dp(t)}{dt} = p(t)Q \implies p(t) = e^{tQ}\]</span></p>
+<p>Où <span class="math inline">\(e^{tQ}\)</span> est l’exponentielle de matrice : <span class="math inline">\(e^{tQ} = \sum_{k=0}^{\infty} \frac{(tQ)^k}{k!}\)</span>.</p>
+</section>
+<section id="les-processus-de-markov-15" class="slide level2">
+<h2>Les processus de Markov (15)</h2>
+<p>Le générateur <span class="math inline">\(Q\)</span> permet de décomposer le mouvement du processus avec :</p>
+<ol type="1">
+<li><strong>Temps de séjour :</strong> Si le processus est dans l’état <span class="math inline">\(i\)</span>, il y reste pendant un temps <span class="math inline">\(T_i\)</span> suivant une <strong>loi exponentielle</strong> de paramètre <span class="math inline">\(\lambda_i = -q_{ii}\)</span>. <span class="math display">\[E[T_i] = \frac{1}{-q_{ii}}\]</span></li>
+</ol>
+</section>
+<section id="les-processus-de-markov-16" class="slide level2">
+<h2>Les processus de Markov (16)</h2>
+<ol start="2" type="1">
+<li><strong>Saut :</strong> Au bout de ce temps <span class="math inline">\(T_i\)</span>, il saute vers un état <span class="math inline">\(j \neq i\)</span> avec la probabilité : <span class="math display">\[\pi_{ij} = \frac{q_{ij}}{\sum_{k \neq i} q_{ik}} = \frac{q_{ij}}{-q_{ii}}\]</span></li>
+</ol>
+<p>On peut alors construire une chaîne de Markov (temps discret) comme sous modèle du processus à temps continu qui ne prend plus en compte le temps passé dans chaque étape.</p>
+</section>
+<section id="les-processus-de-markov-17" class="slide level2">
+<h2>Les processus de Markov (17)</h2>
+<ul>
+<li><strong>Interprétation :</strong> Le générateur décrit la “vitesse” et la direction du saut (pour les processus de sauts) ou la dérive et la diffusion (pour des processus comme le mouvement brownien).</li>
+</ul>
+</section>
+<section id="file-dattente-markovienne-1" class="slide level2">
+<h2>File d’attente markovienne (1)</h2>
+<p>Les files d’attente de type <strong>M/M/[…] </strong>sont par essence des <strong>processus de Markov</strong>, et plus spécifiquement des <strong>processus de Naissance et de Mort</strong> dans l’espace d’état <span class="math inline">\(\mathbb{N}^+\)</span> correspondant au <strong>niveau d’occupation <span class="math inline">\(l(t)\)</span></strong>.</p>
+<ul>
+<li><p><strong>Naissance :</strong> <span class="math inline">\((l(t)=i \to l(t+dt) = i+1)\)</span> avec un taux <span class="math inline">\(q_{i,i+1}=\lambda_i\)</span>.</p></li>
+<li><p><strong>Mort :</strong> <span class="math inline">\((l(t)=i \to l(t+dt) = i-1)\)</span> avec un taux <span class="math inline">\(q_{i,i-1}=\mu_i\)</span> pour <span class="math inline">\(i\geq 0\)</span>.</p></li>
+</ul>
+</section>
+<section id="file-dattente-markovienne-2" class="slide level2">
+<h2>File d’attente markovienne (2)</h2>
+<p>La matrice prend la forme suivante :</p>
+<p><span class="math display">\[Q = \begin{pmatrix}
+-\lambda_0 &amp; \lambda_0 &amp; 0 &amp; 0 &amp; \dots \\
+\mu_1 &amp; -(\lambda_1 + \mu_1) &amp; \lambda_1 &amp; 0 &amp; \dots \\
+0 &amp; \mu_2 &amp; -(\lambda_2 + \mu_2) &amp; \lambda_2 &amp; \dots \\
+\vdots &amp; \vdots &amp; \ddots &amp; \ddots &amp; \ddots
+\end{pmatrix}\]</span></p>
+</section>
+<section id="file-dattente-markovienne-3" class="slide level2">
+<h2>File d’attente markovienne (3)</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div class="grViz html-widget html-fill-item" id="htmlwidget-bcf4f1ea06d048d09330" style="width:960px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-bcf4f1ea06d048d09330">{"x":{"diagram":"\ndigraph markov {\n  rankdir=LR;\n  node [shape = circle, fontname = \"Serif\", fontsize = 12]\n  \n  # États\n  0 [label = \"0\"]\n  1 [label = \"1\"]\n  2 [label = \"2\"]\n  3 [label = \"...\"]\n\n  # Transitions avec symboles grecs (Entités HTML)\n  0 -> 0 [label = \"-&lambda;₀\"]\n  0 -> 1 [label = \"&lambda;₀\"]\n  1 -> 1 [label = \"-(&lambda;₁ + &mu;₁)\"]\n  1 -> 0 [label = \"&mu;₁\"]\n  1 -> 2 [label = \"&lambda;₁\"]\n  2 -> 2 [label = \"-(&lambda;₂ + &mu;₂)\"]\n  2 -> 1 [label = \"&mu;₂\"]\n  2 -> 3 [label = \"&lambda;₂\"]\n  3 -> 2 [label = \"&mu;₃\"]\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="file-dattente-markovienne-4" class="slide level2">
+<h2>File d’attente markovienne (4)</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div class="grViz html-widget html-fill-item" id="htmlwidget-3e101b152ee76d3a4905" style="width:960px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-3e101b152ee76d3a4905">{"x":{"diagram":"\ndigraph markov {\n  rankdir=LR;\n  node [shape = circle, fontname = \"Serif\", fontsize = 12]\n  edge [fontsize = 10, labeldistance = 1.5]\n  \n  # États\n  0 [label = \"0\"]\n  1 [label = \"1\"]\n  2 [label = \"2\"]\n  3 [label = \"...\"]\n\n  # Transitions avec symboles grecs (Entités HTML)\n  0 -> 1 [label = \"&lambda;₀\"]\n  1 -> 0 [label = \"&mu;₁\"]\n  1 -> 2 [label = \"&lambda;₁\"]\n  2 -> 1 [label = \"&mu;₂\"]\n  2 -> 3 [label = \"&lambda;₂\"]\n  3 -> 2 [label = \"&mu;₃\"]\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="file-dattente-markovienne-5" class="slide level2">
+<h2>File d’attente markovienne (5)</h2>
+<ul>
+<li><p><strong><span class="math inline">\(\lambda_i\)</span> :</strong> Taux d’arrivée (nouveaux clients).</p></li>
+<li><p><strong><span class="math inline">\(\mu_i\)</span> :</strong> Taux de service (départ des clients).</p></li>
+<li><p><strong>Équilibre :</strong> Si une <strong>distribution stationnaire</strong> de l’état <span class="math inline">\(l(t)\)</span> notée <span class="math inline">\(p\)</span> (ou souvent <span class="math inline">\(\pi\)</span>) existe, elle vérifie l’équation de flux local (<strong>équations de balance des flux</strong>) : <span class="math display">\[p_i \lambda_i = p_{i+1} \mu_{i+1}\]</span></p>
+<ul>
+<li>Par définition, une <strong>distribution stationnaire</strong> vérifie <strong><span class="math inline">\(\frac{dp(t)}{dt} = 0\)</span></strong></li>
+</ul></li>
+</ul>
+</section>
+<section id="file-dattente-markovienne-6" class="slide level2">
+<h2>File d’attente markovienne (6)</h2>
+<p><strong>Preuve des équations d’équilibre (pour i &gt; 0)</strong> :</p>
+<p><span class="math display">\[\frac{dp(t)}{dt} = 0\text{  soit  } p^tQ = 0\]</span></p>
+<p>Pour <span class="math inline">\(i=1\)</span> :</p>
+<p><span class="math display">\[p_i(t) * q_{i,i}dt + p_{i+1}(t) * q_{i+1,i}dt + p_{i-1}(t) * q_{i-1,i}dt = 0 \]</span></p>
+<p>En enlevant les <span class="math inline">\(dt\)</span> :</p>
+<p><span class="math display">\[-p_i(t) (\lambda_i + \mu_i) + p_{i+1}(t) \mu_{i+1} + p_{i-1}(t) \lambda_{i-1} = 0 \]</span></p>
+</section>
+<section id="file-dattente-markovienne-7" class="slide level2">
+<h2>File d’attente markovienne (7)</h2>
+<p>Or pour <span class="math inline">\(i=0\)</span> :</p>
+<p><span class="math display">\[-p_i(t) \lambda_i + p_{i+1}(t) \mu_{i+1} = 0 \]</span></p>
+<p><span class="math display">\[ p_{i+1}(t) \mu_{i+1} = p_i(t) \lambda_i  \]</span></p>
+</section>
+<section id="file-dattente-markovienne-8" class="slide level2">
+<h2>File d’attente markovienne (8)</h2>
+<p>Pour <span class="math inline">\(i=1\)</span> dans l’équation centrale :</p>
+<p><span class="math display">\[p_{i-1}(t) \lambda_{i-1} = p_{i}(t) \mu_i\]</span></p>
+<p>Donc :</p>
+<p><span class="math display">\[-p_i(t) (\lambda_i + \mu_i) + p_{i+1}(t) \mu_{i+1} + p_{i}(t) \mu_i = 0 \]</span></p>
+<p><span class="math display">\[-p_i(t) \lambda_i + p_{i+1}(t) \mu_{i+1} = 0 \]</span></p>
+<p>Donc en utilisant le même raisonnement pour <span class="math inline">\(i&gt;1\)</span> par <strong>récurrence</strong>, on aprouvé nos <strong>équations de balance</strong> CQFD.</p>
+</section>
+<section id="file-dattente-markovienne-9" class="slide level2">
+<h2>File d’attente markovienne (9)</h2>
+<p>On peut alors calculer la distriubtion asumptotique à partir de <span class="math inline">\(p_0\)</span> :</p>
+<p><span class="math display">\[p_n = \frac{\lambda_{n-1}\lambda_{n-2}...\lambda_0}{\mu_n\mu_{n-1}...\mu_1} p_0\ (n \geq 1)\]</span> <span class="math display">\[= p_0 \prod_{i=1}^{n}\frac{\lambda_{i-1}}{\mu_i} \]</span></p>
+</section>
+<section id="file-dattente-markovienne-10" class="slide level2">
+<h2>File d’attente markovienne (10)</h2>
+<p>Puis calculer <span class="math inline">\(p_0\)</span> :</p>
+<p><span class="math display">\[ p_0 = \left( 1 + \sum_{n=1}^{+ \infty} \prod_{i=1}^{n}  \frac{\lambda_{i-1}}{\mu_i} \right)^{-1} \]</span></p>
+<p>La théorie de Markov nous assure de la convergence d’un processus de Markov <sup>1</sup> vers sa <strong>distribution stationnaire</strong> aussi appelé <strong>distribution asymptotique</strong>.</p>
+<aside><ol class="aside-footnotes"><li id="fn2"><p>Attention dans le cas où il est irréductible (et récurrente positive et apériodique dans le cas discret)</p></li></ol></aside></section>
+<section id="file-dattente-markovienne-11" class="slide level2">
+<h2>File d’attente markovienne (11)</h2>
+<p>On peut ensuite en déduire les <strong>principaux résultats</strong> de la théorie sur <span class="math inline">\(L\)</span> et <span class="math inline">\(W\)</span> grâce à la <strong>théorie ergodique</strong> et à la <strong>loi de Poisson</strong> :</p>
+<p><span class="math display">\[L = \lim_{t_1 \to + \infty} \frac{1}{t_1-t_0}\int_{t_0}^{t_1}l(t)dt = \sum_{i \in \mathbb{N}}p_i * i \]</span> <span class="math display">\[L_q = \lim_{t_1 \to + \infty} \frac{1}{t_1-t_0}\int_{t_0}^{t_1}max(0,l(t)-1)dt = \sum_{i &gt; 0}p_i * (i-1) \]</span></p>
+<p><span class="math display">\[W = \frac{L}{\lambda}, W_q = \frac{L_q}{\lambda}\]</span></p>
+</section>
+<section id="file-dattente-markovienne-12" class="slide level2">
+<h2>File d’attente markovienne (12)</h2>
+<p>De cela, on peux directement étudier <sup>1</sup> <strong>analytiquement</strong> plusieurs modèles :</p>
+<ul>
+<li><p>Les modèles <span class="math inline">\(M/M/1\)</span> avec <span class="math inline">\(q_{i,i-1} = \mu\)</span></p>
+<ul>
+<li>Lorsque <span class="math inline">\(\mu=0\)</span>, o nse retrouve avec un processus de Poisson</li>
+</ul></li>
+<li><p>Les modèles <span class="math inline">\(M/M/c\)</span> avec <span class="math inline">\(q_{i,i-1} = \mathbb{I}_{i &lt; c} i\mu + \mathbb{I}_{i \geq c} c\mu\)</span></p></li>
+<li><p>Les modèles <span class="math inline">\(M/M/+\infty\)</span> avec <span class="math inline">\(q_{i,i-1} = i\mu\)</span></p></li>
+</ul>
+<aside><ol class="aside-footnotes"><li id="fn3"><p>Vous êtes invités à retrouver les formules et à regarder Shortle et al.&nbsp;(2018) pour plus de détails</p></li></ol></aside></section>
+<section id="file-dattente-markovienne-13" class="slide level2">
+<h2>File d’attente markovienne (13)</h2>
+<p>Cas <span class="math inline">\(M/M/1\)</span> :</p>
+<ul>
+<li><p><span class="math inline">\(p_0 = 1 -\rho\)</span> (<span class="math inline">\(\rho \equiv \frac{\lambda}{\mu} &lt; 1\)</span> facteur de congestion / charge)</p></li>
+<li><p><span class="math inline">\(p_n = p_0 \rho^n\)</span></p></li>
+</ul>
+<p>On peut obtenir ces résultats à partir d’une méthode itérative sur les équations de balance, de la fonction générative <span class="math inline">\(P(z) = \frac{1-\rho}{1-\rho z} (\rho &lt;1, |z| \leq 1)\)</span> ou encore de l’opérateur <span class="math inline">\(D\)</span> dans l’équation aux différences <span class="math inline">\([\mu D^2 - (\lambda + \mu)D + \lambda]p_n=0\)</span></p>
+</section>
+<section id="file-dattente-markovienne-14" class="slide level2">
+<h2>File d’attente markovienne (14)</h2>
+
+<img data-src="FIE4-2-IMTNS-2-Course-3-Slides_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"></section>
+<section id="file-dattente-markovienne-14-1" class="slide level2">
+<h2>File d’attente markovienne (14)</h2>
+<p>Cas <span class="math inline">\(M/M/1\)</span> :</p>
+<ul>
+<li><span class="math inline">\(L = \frac{\rho}{1-\rho} = \frac{\lambda}{\mu-\lambda}\)</span></li>
+<li><span class="math inline">\(L_q = \frac{\rho^2}{1-\rho} = \frac{\lambda}{\mu-\lambda}\)</span></li>
+</ul>
+
+<img data-src="FIE4-2-IMTNS-2-Course-3-Slides_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"></section>
+<section id="file-dattente-markovienne-15" class="slide level2">
+<h2>File d’attente markovienne (15)</h2>
+<p>Cas <span class="math inline">\(M/M/1\)</span> :</p>
+<ul>
+<li><span class="math inline">\(W = \frac{\rho}{\lambda(1-\rho)} = \frac{1}{\mu-\lambda}\)</span></li>
+<li><span class="math inline">\(W_q = \frac{\rho}{\mu-\lambda}\)</span></li>
+</ul>
+<p>Pour <span class="math inline">\(\lambda=1h^{-1}\)</span>, on obtient le même graphique que <span class="math inline">\(L\)</span> et <span class="math inline">\(L_q\)</span> ave mais avec des unités de temps en heure pour les ordonnées.</p>
+</section>
+<section id="file-dattente-markovienne" class="slide level2">
+<h2>File d’attente markovienne (…)</h2>
+<p>Il existe de nombreuses extensions qui peuvent être étudiées tel que :</p>
+<ul>
+<li><p>Modèle <span class="math inline">\(M/M/1/PC\)</span> avec des classes de priorité</p></li>
+<li><p>Modèle avec des comportements de fuites des clients influent sur le taux d’arrivée en file et ou en serveurs</p></li>
+<li><p>Modèles <span class="math inline">\(M/M/1/FIFO/K/L\)</span></p></li>
+<li><p>Réseau de file d’attentes</p></li>
+</ul>
+</section>
+<section id="file-dattente-markovienne-16" class="slide level2">
+<h2>File d’attente markovienne (…)</h2>
+<p>Quelques résultats exactes existent pour des cas particuliers <strong>files d’attente non markoviennes</strong> :</p>
+<ul>
+<li><p><span class="math inline">\(E_{k_a}/E_{k_s}/1\)</span></p></li>
+<li><p><span class="math inline">\(M/G/1\)</span></p></li>
+<li><p><span class="math inline">\(G/GI/+\infty\)</span></p></li>
+</ul>
+<p>Au delà, on ne dispose que de quelques approximations (exemple <span class="math inline">\(G/G/1\)</span>)</p>
+</section>
+<section id="réseaux-de-file-dattente-1" class="slide level2">
+<h2>Réseaux de file d’attente (1)</h2>
+<p>Les <strong>réseaux de files d’attente</strong> étendent les modèles de station unique.</p>
+<ul>
+<li>Example de réseau en <strong>série</strong> :</li>
+</ul>
+
+<img data-src="illustrations/SeriesQueue.png" title="Series Queue" class="r-stretch quarto-figure-center"><p class="caption"><em>Series queue</em></p></section>
+<section id="réseaux-de-file-dattente-2" class="slide level2">
+<h2>Réseaux de file d’attente (2)</h2>
+<p>Dans le cas de <strong>réseaux ouverts de Jackson</strong> ( <em>Open Jackson Networks</em> ) avec des hypothèses de comportement indépendant, on peut étudier chaque station de file d’attente indépendemment en tenant uniquement en compte des <strong>équations de traffic</strong> pour calculer le taux d’arrivée de chaque station <span class="math inline">\(j\)</span> :</p>
+<p><span class="math display">\[\lambda_j = \gamma_j + \sum_{j'=1}^{k} \lambda_{j'} r_{jj'}\]</span></p>
+<ul>
+<li><p><span class="math inline">\(\gamma_j\)</span> : arrivées initiales</p></li>
+<li><p><span class="math inline">\(r_{jj'}\)</span> : probabilités de routage</p></li>
+</ul>
+</section>
+<section id="réseaux-de-file-dattente-3" class="slide level2">
+<h2>Réseaux de file d’attente (3)</h2>
+<p>Lorsque vous avez plusieurs <strong>classes de clients <span class="math inline">\(u \in U\)</span></strong>, la formule reste similaire :</p>
+<p><span class="math display">\[\lambda_j = \sum_{u\in U}\gamma_{u,j} + \sum_{u\in U}\sum_{j'=1}^{k} \lambda_{u,j'} r_{u,jj'}\]</span></p>
+</section>
+<section id="réseaux-de-file-dattente-4" class="slide level2">
+<h2>Réseaux de file d’attente (4)</h2>
+<ul>
+<li><p><strong>Goulet d’étranglement</strong> d’un réseau de file d’attente</p>
+<ul>
+<li><p>Notion d’<strong>équilibre des charges</strong></p></li>
+<li><p>Pour le déterminer, on doit répondre à la question : “Quelle serait la <strong>première station</strong> à atteindre <strong>saturation (<span class="math inline">\(\mu=\lambda\)</span>)</strong> si on <strong>augmentait le taux d’arrivée global <span class="math inline">\(\lambda\)</span></strong> ? Et ensuite le deuxième ? etc …</p></li>
+<li><p>Expressions analytique possibles pour certain modèle</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="réseaux-de-file-dattente-5" class="slide level2">
+<h2>Réseaux de file d’attente (5)</h2>
+<ul>
+<li>Le cas le plus simple est pour les système en série où la station / machine <span class="math inline">\(j^*\)</span> goulet d’étranglement peut se trouver avec la station dont le taux de service (atteint lorsque <span class="math inline">\(\lambda_j \to +\infty\)</span>) est minimal, c-à-d <span class="math inline">\(j^*= argmin_j(\mu_j)\)</span></li>
+</ul>
+
+<img data-src="illustrations/GouletEnSerie.png" title="Goulet d'étranglement dans un réseau en série" class="r-stretch quarto-figure-center"><p class="caption"><em>Goulet d’étranglement dans un réseau en série</em></p></section>
+<section id="réseaux-de-file-dattente-6" class="slide level2">
+<h2>Réseaux de file d’attente (6)</h2>
+<ul>
+<li>Dans le cas où les patients suivent un circuit …</li>
+</ul>
+</section></section>
+<section id="merci-pour-votre-attention" class="title-slide slide level1 center">
+<h1>Merci pour votre attention !</h1>
+<p>Les questions sont les bienvenues !</p>
+
+</section>
+
+
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="FIE4-2-IMTNS-2-Course-3-Slides_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+
+    <script>
+
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+
+      // slide changes (different for each slide format).
+
+      (function () {
+
+        // dispatch for htmlwidgets
+
+        function fireSlideEnter() {
+
+          const event = window.document.createEvent("Event");
+
+          event.initEvent("slideenter", true, true);
+
+          window.document.dispatchEvent(event);
+
+        }
+
+    
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+
+          fireSlideEnter();
+
+    
+
+          // dispatch for shiny
+
+          if (window.jQuery) {
+
+            if (previousSlide) {
+
+              window.jQuery(previousSlide).trigger("hidden");
+
+            }
+
+            if (currentSlide) {
+
+              window.jQuery(currentSlide).trigger("shown");
+
+            }
+
+          }
+
+        }
+
+    
+
+        // hookup for slidy
+
+        if (window.w3c_slidy) {
+
+          window.w3c_slidy.add_observer(function (slide_num) {
+
+            // slide_num starts at position 1
+
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+
+          });
+
+        }
+
+    
+
+      })();
+
+    </script>
+
+    
+
+    <script id="quarto-html-after-body" type="application/javascript">
+    window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
+      }
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
+      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+      tabsets.forEach(function(tabset) {
+        const tabby = new Tabby('#' + tabset.id);
+      });
+      const isCodeAnnotation = (el) => {
+        for (const clz of el.classList) {
+          if (clz.startsWith('code-annotation-')) {                     
+            return true;
+          }
+        }
+        return false;
+      }
+      const onCopySuccess = function(e) {
+        // button target
+        const button = e.trigger;
+        // don't keep focus
+        button.blur();
+        // flash "checked"
+        button.classList.add('code-copy-button-checked');
+        var currentTitle = button.getAttribute("title");
+        button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
+        setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
+          button.setAttribute("title", currentTitle);
+          button.classList.remove('code-copy-button-checked');
+        }, 1000);
+        // clear code selection
+        e.clearSelection();
+      }
+      const getTextToCopy = function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+        text: getTextToCopy
+      });
+      clipboard.on('success', onCopySuccess);
+      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+          text: getTextToCopy,
+          container: window.document.getElementById('quarto-embedded-source-code-modal')
+        });
+        clipboardModal.on('success', onCopySuccess);
+      }
+        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+        var mailtoRegex = new RegExp(/^mailto:/);
+          var filterRegex = new RegExp('/' + window.location.host + '/');
+        var isInternal = (href) => {
+            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+        }
+        // Inspect non-navigation links and adorn them if external
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+        for (var i=0; i<links.length; i++) {
+          const link = links[i];
+          if (!isInternal(link.href)) {
+            // undo the damage that might have been done by quarto-nav.js in the case of
+            // links that we want to consider external
+            if (link.dataset.originalHref !== undefined) {
+              link.href = link.dataset.originalHref;
+            }
+          }
+        }
+      function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+        const config = {
+          allowHTML: true,
+          maxWidth: 500,
+          delay: 100,
+          arrow: false,
+          appendTo: function(el) {
+              return el.closest('section.slide') || el.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start',
+        };
+        if (contentFn) {
+          config.content = contentFn;
+        }
+        if (onTriggerFn) {
+          config.onTrigger = onTriggerFn;
+        }
+        if (onUntriggerFn) {
+          config.onUntrigger = onUntriggerFn;
+        }
+          config['offset'] = [0,0];
+          config['maxWidth'] = 700;
+        window.tippy(el, config); 
+      }
+      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+      for (var i=0; i<noterefs.length; i++) {
+        const ref = noterefs[i];
+        tippyHover(ref, function() {
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          try { href = new URL(href).hash; } catch {}
+          const id = href.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note) {
+            return note.innerHTML;
+          } else {
+            return "";
+          }
+        });
+      }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
+      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+      for (var i=0; i<bibliorefs.length; i++) {
+        const ref = bibliorefs[i];
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
+          });
+        }
+      }
+    });
+    </script>
+    
+
+</body></html>

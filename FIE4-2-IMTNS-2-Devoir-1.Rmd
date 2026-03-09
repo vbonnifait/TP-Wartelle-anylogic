@@ -1,0 +1,367 @@
+---
+title: "FIE4-2-IMTNS-2-Devoir-1"
+author: "Adrien Wartelle"
+date: "2026-01-11"
+output: html_notebook # html_document
+---
+
+# Etude de cas sur l’analyse et la mesure de performance des Flux de Patients
+
+## Introduction
+
+Ce travail porte sur l'analyse des flux de patients sur un plateau mutualisé de consultations externes d'un hôpital. 
+L'objectif est de réaliser un diagnostic objectif de la performance organisationnelle du service d'urologie en s'appuyant sur les méthodes et outils d'analyse de flux vus précédemment ainsi que sur le langage R à travers l’environnement de RStudio. 
+La figure ci-dessous illustre les principaux flux ainsi que le Plan du plateau de consultations (voir fichiers PlanConsultations.pdf et ZoomURO.pdf consultables à partir http://bit.ly/PlansCHUTlse)
+
+<!--<img src="illustrations/PlanUro.png" alt="Plan du plateau de consultations" width="600"/>-->
+![*Plan du plateau de consultations*](illustrations/PlanUro.png "Plan du plateau de consultations")
+Afin de collecter des données sur les parcours suivis, les patients qui se sont présentés le 12/11/2015 ont été équipés d’une étiquette électronique (type RFID) qui a permis de tracer leurs parcours dans le plateau de consultation. 
+Les données collectées ont été fusionnées avec les données des outils de gestion des dossiers administratifs et médicaux utilisés par les personnels. 
+L'ensemble est disponible sous la forme d’un fichier log, illustré par le tableau suivant (voir annexe LogPatientUROseul_12112015.xlsx consultable à partir  http://bit.ly/logPatients). 
+
+<!--<img src="illustrations/TableauLogPatients.png" alt="Vue du tableau de données de log patient" width="600"/>-->
+![*Vue du tableau de données de log patient*](illustrations/TableauLogPatients.png "Vue du tableau de données de log patient")
+
+
+Les différentes de ce tableau de données sont :
+
+  - _ID_ (Col A) : Identifiant du patient
+  
+  - _Timestamp start_ (Col B) : horodatage entrée de zone ou salle 
+  
+  - _Timestamp end_ (Col C) : horodatage sortie de zone ou salle
+  
+  - _Activity\_MACRO_ (Col D) : Type d'activité
+  
+  - _Activity\_DETAILS_ (Col E) : Activité suivie et indice salle (i)
+  
+  - _Ress.Humaines_ (Col F) : Ressources humaines administratives ou soignantes intervenant dans l'activité
+  
+  - _distance parcourues_ (Col G) : Distance parcourue cumulée
+  
+  - _début/fin opX_ (Col H à O) : horodatage début/fin de chaque opération de prise en charge par une ressource administrative ou soignante (maxi 4 opérations par activité).
+
+## **Devoir 1 - Travail demandé** : Exploration de Données Exploratoires
+
+Ce travail est à rendre pour le **25/01/2026** au format Rmd ou R (+pdf si besoin) avec pour titre "NOM_Prenom_FIE4-2-IMTNS-2-Devoir-1.*"
+
+Ce premier devoir consiste en une exploration initiale des données afin de :
+
+  - Comprendre les données 
+  
+  - Structurer les données
+  
+  - Effectuer une analyse descriptive des données
+  
+  - Synthétiser une vision du service d'Urologie
+
+```{r include=FALSE}
+library(tidyverse)
+library(data.table)
+library(readxl)
+
+load("local_data/trace_example_1.RData")
+load("local_data/trace_example_final.RData")
+```
+
+### Question 1) Mise en forme des données (_Preprocessing_) (/6)
+
+Avant toute forme d'analyse et de modélisation, une grande partie du travail réside dans la préparation des données.
+Il faut ainsi mettre les données dans un format qui soit plus simple à exploiter.
+Ici, on cherche à obtenir les données avec les colonnes / variables suivantes :
+
+  - _ID_ (character) : Identifiant du patient ou de l'acteur en chaîne de caractères
+  
+  - TYPE (factor) : Distingue le type d'agent par les facteurs PATIENT et ACTOR
+  
+  - CURRENT_LOCATION (character) : Identifie la localisation actuelle (ou source)
+  
+    - Les localisations ont été renommées avec : 
+    
+      c("Entree_Generale","Accueil_Prio_1","Accueil_General_1",
+            "Accueil_General_2","Accueil_General_3","Accueil_Attente",
+            "Sortie_Attente","Sortie_Bureau_1","Sortie_Bureau_2",
+            "Sortie_Generale","Uro_Box_1","Uro_Box_2","Uro_Box_3",
+            "Uro_Box_4","Uro_Box_5","Uro_Box_6","Uro_Box_7",
+            "Uro_Bureau_Annonce_1","Uro_Bureau_IDE_1","Uro_Debimetrie_1",
+            "Uro_Examen_1","Uro_Examen_2","Uro_Examen_3","Uro_Attente_1")
+            
+  - NEXT_LOCATION (character) : Prochaine localisation (lorsque l'agent est en déplacement)
+  
+  - CURRENT_OPERATION_NUMBER (numeric) : étape d'opération
+  
+  - WITH_1 (character) : agent avec lequel l'agent concerné est en train d'interagir (patient avec acteur ou acteur avec patient)
+  
+  - WITH_2 (character) : 2ème agent avec lequel l'agent concerné est en train d'interagir (patient avec acteur ou acteur avec patient)
+  
+  - DATETIME_BEGIN (datetime) : Date de début de l'état courant
+  
+  - DATETIME_END (datetime) : Date de fin de l'état courant et de début du prochain état
+
+  - DISTANCE PARCOURUE (numeric) : Distance parcourue cumulée
+  
+Voici un extrait de ce qu'il faut obtenir, ici filtrer sur le patient d'ID 8 :
+
+```{r example trace}
+trace_example_1
+trace_example_final
+```
+
+## Guide 
+
+Voici une proposition des étapes de transformation à effectuer (vous pouvez vous faire autrement) :
+
+1. Pivotage des données (gather)
+
+    Toutes les colonnes de dates (Timestamp start, début op1, etc.) sont basculées dans une seule colonne date.
+
+    Le nom des anciennes colonnes sont stockées dans type_event.
+
+2. Extraction des Ressources Humaines (mutate + str_extract)
+
+    Pour chaque ligne, le script crée quatre nouvelles colonnes techniques (ressources_humaines_op1 à op4).
+
+    Il utilise des expressions régulières (Regex) pour chercher dans la colonne Ress. Humaines les noms associés spécifiquement à chaque opération (ex: ce qui se trouve entre "Op1 :" et le tiret "-").
+
+3. Nettoyage et Filtrage Rigoureux (filter)
+
+    Suppression des vides : On retire les lignes où la date est inexistante.
+
+    Logique métier : Le script supprime les événements d'opérations (début/fin) si aucune ressource humaine n'était assignée à cette opération spécifique. Cela permet de ne garder que les opérations qui ont réellement eu lieu.
+
+4. Enrichissement et Tri (arrange + left_join)
+
+    Chronologie : Les données sont triées par date pour reconstruire le fil de l'histoire.
+
+    Jointure : Ajout d'informations géographiques via la table place_table.
+
+5. Consolidation de la ressource principale (transmute)
+
+    Attribuant la ressource extraite (op1, op2, etc.) en fonction de la valeur contenue dans type_event.
+
+    Nettoyage final : Utilise str_sub pour enlever les préfixes inutiles (comme "Op1 : ") et ne garder que le nom propre.
+
+6. Séparation des binômes (mutate final)
+
+Si plusieurs acteurs ont travaillé sur une étape (séparées par " et "), le script scinde l'information :
+
+    ressource_humaine_1 : Le premier nom.
+
+    ressource_humaine_2 : Le second nom (après le "et").
+
+Résumé du résultat final
+
+Vous passez d'un fichier de suivi d'opérations à un journal d'événements propre, où chaque ligne est une action datée, avec le lieu précis et les noms des intervenants séparés dans deux colonnes distinctes.
+
+#### Réponse (1.a) :
+
+_Entrez votre texte ici_
+
+```{r answer 1.a}
+#_Entrez votre code R ici_
+
+
+# Quelques parties d'aide 
+
+df <- read_excel("local_data/Log_Patient_URO_12112015.xlsx")
+
+place_table <- tibble(
+  Activity_DETAILS = c("Entrée des Consultations",
+    "ACCUEIL.Bureau_AccueilPRIO(1)","ACCUEIL.Bureau_Accueil(1)",
+    "ACCUEIL.Bureau_Accueil(2)","ACCUEIL.Bureau_Accueil(3)",
+    "ACCUEIL.S_Attente_Accueil(1)",
+    "SORTIE_URO.File_Attente(1)","SORTIE_URO_Bureau_Sortie(1)",
+    "SORTIE_URO.Bureau_Sortie(2)","Sortie des Consultations",
+    "URO.Box_Consult(1)","URO.Box_Consult(2)","URO.Box_Consult(3)",
+    "URO.Box_Consult(4)","URO.Box_Consult(5)","URO.Box_Consult(6)",
+    "URO.Box_Consult(7)","URO.Bureau_Annonce(1)","URO.Bureau_IDE(1)",
+    "URO.Salle_Débitmétrie(1)","URO.Salle_Examen(1)",
+    "URO.Salle_Examen(2)","URO.Salle_Examen(3)","URO.S_Attente_5(1)"),
+  place = c("Entree_Generale","Accueil_Prio_1","Accueil_General_1",
+            "Accueil_General_2","Accueil_General_3","Accueil_Attente",
+            "Sortie_Attente","Sortie_Bureau_1","Sortie_Bureau_2",
+            "Sortie_Generale","Uro_Box_1","Uro_Box_2","Uro_Box_3",
+            "Uro_Box_4","Uro_Box_5","Uro_Box_6","Uro_Box_7",
+            "Uro_Bureau_Annonce_1","Uro_Bureau_IDE_1","Uro_Debimetrie_1",
+            "Uro_Examen_1","Uro_Examen_2","Uro_Examen_3","Uro_Attente_1"))
+
+df %>%
+  filter(ID == 8) %>%
+  mutate(CURRENT_LOCATION = ifelse(Activity_DETAILS == "Entrée des Consultations","Entree_Generale",NA),
+         CURRENT_LOCATION = ifelse(Activity_DETAILS == "ACCUEIL.S_Attente_Accueil(1)","Accueil_Prio_1",CURRENT_LOCATION))
+  left_join(place_table)
+
+df %>%
+  transmute(ID, Activity_DETAILS,
+            t0 = `Timestamp start`,
+            t1 = `début op1`,
+            t2 = `fin op1`,
+            t3 = `début op2`,
+            t4 = `fin op2`,
+            t5 = `début op3`,
+            t6 = `fin op3`,
+            t7 = `début op4`,
+            t8 = `fin op4`,
+            t9 = `Timestamp end`) %>%
+  filter(ID==8) %>%
+  group_by(ID) %>%
+  filter(seq_along(ID) == 3) %>%
+  gather(key="type",value="time",t0:t9) %>%
+  filter(time > as_datetime("2015-11-12 00:01:00")) %>%
+  arrange(ID,time) %>%
+  mutate(next_time = lead(time)) %>%
+  filter(!is.na(time))
+
+str_sub(str_extract("Op1 : URO.IDE(1) - Op2 : URO.IDE(1) - Op3 : URO.MED(3) et URO.IDE(1) - Op4 : URO.IDE(1)","Op3\ :\ ([^-])*\ -"),7L,-3L)
+
+# Pour ajouter les acteurs avec juste les patients (attention on a des "trous" qu'il faudrait peut-être compléter)
+
+trace_example_2 <- trace_example_1 %>%
+  filter(TYPE == "PATIENT") %>%
+  filter(!is.na(WITH_1)) %>%
+  mutate(WITH_2 = NA,
+         WITH_3 = ID,
+         ID = WITH_1,
+         WITH_1 = WITH_3) %>%
+  select(-WITH_3) %>%
+  mutate(TYPE = "ACTOR",
+         DISTANCE_PARCOURUE = NA) %>%
+  arrange(ID) %>%
+  rbind(
+    trace_example_1 %>%
+      filter(!is.na(WITH_2)) %>%
+      mutate(WITH_1 = NA,
+             WITH_3 = ID,
+             ID = WITH_2,
+             WITH_1 = WITH_3) %>%
+      select(-WITH_3) %>%
+      mutate(TYPE = "ACTOR",
+             DISTANCE_PARCOURUE = NA) %>%
+      arrange(ID)
+  ) %>%
+  arrange(ID,DATETIME_BEGIN)
+
+```
+
+
+
+De plus, il vous est demandé d'identifier toutes les erreurs de données potentielles (s'il y en a) comme :
+
+  - les valeurs manquantes avec la fonction _is\_na()_ (sans raison valable)
+  
+  - les valeurs aberrantes comme des distances trop grandes ou des temps trop longs
+  
+  - les valeurs incohérentes comme des chevauchements de dates ou des enchaînements incohérent d'activités
+
+#### Réponse (1.b) :
+
+_Entrez votre texte ici_
+
+```{r answer 1.b}
+#_Entrez votre code R ici_
+```
+
+### Question 2) Dénombrements (/1)
+
+Les premières analyses effectuées sur un jeu de données sont le plus souvent de simples dénombrement.
+
+Ainsi il vous est demandé d'extraire les nombres : (_attention à la façon de compter_)
+   
+   - Nombre de patients
+   
+   - Nombre d'acteurs
+  
+   - Nombre d’activités générales et détaillées
+ 
+N'hésitez pas à discuter brièvement de ces nombres notamment en les comparant.
+
+#### Réponse :
+
+_Entrez votre texte ici_
+
+```{r answer 2}
+#_Entrez votre code R ici_
+```
+
+### Question 3) Analyse du patient le plus long (/1) 
+
+Il est souvent utile d'identifier les cas les plus extrêmes dans une population.
+
+Ici, il vous est demandé d'identifier le patient avec le plus long temps de séjour et de :
+
+  - de calculer son temps de séjour total
+
+  - de calculer sa distance totale parcourue
+
+  - de tenter d'analyser la cause de cette longueur, ou du moins de constater où se situe les phases responsables dans son parcours
+
+N'hésitez pas à discuter brièvement de son parcours.
+ 
+#### Réponse :
+
+_Entrez votre texte ici_
+
+```{r answer 3}
+#_Entrez votre code R ici_
+```
+
+
+### Question 4) Analyse des temps (/4)
+
+On peut ensuite partir sur une analyse globale plus poussée sur :
+
+   - Les temps de séjour et d'attente des patients
+   
+   - Les temps d'activité
+   
+
+Vous êtes libres d'aller explorer différents indicateurs, hypothèses de distributions (lois de probabilités).
+Notamment quel ratio de temps les patients passent-ils à attendre ?
+Il est fortement recommandé d'utiliser des plots pour votre exploration.
+N'hésitez pas à faire ressortir les faits les plus marquant et à discuter brièvement des distributions que vous observerez.
+
+#### Réponse :
+
+_Entrez votre texte ici_
+
+```{r answer 4}
+#_Entrez votre code R ici_
+```
+
+
+### 5) Analyse du niveau d'occupation (/4)
+
+Au delà des temps, l'analyse de la congestion d'un système se fait sur le niveau d'occupation.
+Il vous est demandé d'identifier et si pertinent d'illustrer :
+
+  - le niveau d'occupation à chaque instant de la journée analysée puis lissé sur 2h
+  
+  - le niveau d'occupation par blocs de 2h
+  
+  - le niveau d'occupation moyen sur la journée
+  
+  
+L'évolution du niveau d'occupation étant une conséquence directe des arrivées et des départs.
+Il vous est demandé de faire les mêmes analyses sur le nombre d'arrivées et de départs au cours de la journée et de le mettre en lien avec le niveau d'occupation.
+
+#### Réponse :
+
+_Entrez votre texte ici_
+
+```{r answer 5}
+#_Entrez votre code R ici_
+```
+
+
+### 6) Analyse de l'activité des acteurs (/4)
+
+De manière similaire avec la question 3 pour le patient le plus long, il vous est demandé d'analyser l'activité des acteurs par type d'acteur.
+On considéra que les acteurs arrivent dans le service 5 min avant leur première activité et partent 5 min après leur dernière activité.
+
+#### Réponse :
+
+_Entrez votre texte ici_
+
+```{r answer 6}
+#_Entrez votre code R ici_
+```

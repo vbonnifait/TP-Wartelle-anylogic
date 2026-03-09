@@ -1,0 +1,144 @@
+---
+title: "FIE4-2-IMTNS-2-Devoir-3"
+author: "Adrien Wartelle"
+date: "2026-01-11"
+output: html_notebook # html_document
+---
+
+# Etude de cas sur l’analyse et la mesure de performance des Flux de Patients
+
+## Introduction
+
+Ce travail porte sur l'analyse des flux de patients sur un plateau mutualisé de consultations externes d'un hôpital. 
+L'objectif est de réaliser un diagnostic objectif de la performance organisationnelle du service d'urologie en s'appuyant sur les méthodes et outils d'analyse de flux vus précédemment ainsi que sur le langage R à travers l’environnement de RStudio. 
+La figure ci-dessous illustre les principaux flux ainsi que le Plan du plateau de consultations (voir fichiers PlanConsultations.pdf et ZoomURO.pdf consultables à partir http://bit.ly/PlansCHUTlse)
+
+<!--<img src="illustrations/PlanUro.png" alt="Plan du plateau de consultations" width="600"/>-->
+![*Plan du plateau de consultations*](illustrations/PlanUro.png "Plan du plateau de consultations")
+Afin de collecter des données sur les parcours suivis, les patients qui se sont présentés le 12/11/2015 ont été équipés d’une étiquette électronique (type RFID) qui a permis de tracer leurs parcours dans le plateau de consultation. 
+Les données collectées ont été fusionnées avec les données des outils de gestion des dossiers administratifs et médicaux utilisés par les personnels. 
+L'ensemble est disponible sous la forme d’un fichier log, illustré par le tableau suivant (voir annexe LogPatientUROseul_12112015.xlsx consultable à partir  http://bit.ly/logPatients). 
+
+<!--<img src="illustrations/TableauLogPatients.png" alt="Vue du tableau de données de log patient" width="600"/>-->
+![*Vue du tableau de données de log patient*](illustrations/TableauLogPatients.png "Vue du tableau de données de log patient")
+
+
+Les différentes de ce tableau de données sont :
+
+  - _ID_ (Col A) : Identifiant du patient
+  
+  - _Timestamp start_ (Col B) : horodatage entrée de zone ou salle 
+  
+  - _Timestamp end_ (Col C) : horodatage sortie de zone ou salle
+  
+  - _Activity\_MACRO_ (Col D) : Type d'activité
+  
+  - _Activity\_DETAILS_ (Col E) : Activité suivie et indice salle (i)
+  
+  - _Ress.Humaines_ (Col F) : Ressources humaines administratives ou soignantes intervenant dans l'activité
+  
+  - _distance parcourues_ (Col G) : Distance parcourue cumulée
+  
+  - _début/fin opX_ (Col H à O) : horodatage début/fin de chaque opération de prise en charge par une ressource administrative ou soignante (maxi 4 opérations par activité).
+
+## **Devoir 4 - Travail demandé** : Modélisation finale
+
+Ce travail, qui peut-être effectué en binôme, est à rendre pour le **23/03/2026** au format Rmd ou R (+pdf si besoin) avec pour titre "NOM_Prenom_FIE4-2-IMTNS-2-Devoir-4.*" et fera l'objet d'une soutenance à cette même date.
+
+Toujours dans la continuité des précédant devoirs, l'objectif de ce dernier devoir est de proposer une modélisation simulable finale de notre service d'urologie en 3 étapes :
+
+1) Modélisation des parcours patient par _Process Mining_
+
+2) Simulation du service d'accueil sous Anylogic
+
+3) Simulation du service d'urologie
+
+```{r include=FALSE}
+library(tidyverse)
+library(data.table)
+library(readxl)
+
+load("local_data/trace_example_1.RData")
+load("local_data/trace_example_final.RData")
+devoir3_data_accueil = read_csv2("local_data/devoir3_data_accueil.csv")
+```
+
+### Question 1) Modélisation des parcours patient par _Process Mining_ (/2.5)
+
+Pour cette premier question, il vous est demandé de modéliser les parcours patient selon un modèle de chaîne de Markov.
+On cherche à modéliser uniquement les étapes impliquant un agent de soins, c'est-à-dire qui utilise des ressources du service (contrairement aux étapes de déplacement et d'attente).
+
+
+Par exemple pour le patient d'ID 10, on a 9 étapes :
+
+```{r}
+trace_example_final %>%
+  filter(!is.na(CURRENT_OPERATION_NUMBER)) %>%
+  filter(ID == 10)
+```
+
+Pour éviter toute difficulté liée à la complexité des opérations, on va regrouper les différents temps selon l'activité macro et le type d'acteur.
+Par exemple, pour le patient d'ID 10, on a les temps "strictes" suivant :
+
+```{r}
+trace_example_final_b <- trace_example_final %>%
+  filter(!is.na(CURRENT_OPERATION_NUMBER)) %>%
+  filter(ID == 10) %>%
+  mutate(ACTIVITY_MACRO = ifelse(str_detect(CURRENT_LOCATION,"Uro_Box"),
+                                 "Consultation",NA),
+         ACTIVITY_MACRO = ifelse(str_detect(CURRENT_LOCATION,"Uro_Examen"),
+                                 "Examen",ACTIVITY_MACRO),
+         ACTIVITY_MACRO = ifelse(str_detect(CURRENT_LOCATION,"Accueil"),
+                                 "Accueil",ACTIVITY_MACRO),
+         ACTIVITY_MACRO = ifelse(str_detect(CURRENT_LOCATION,"Sortie"),
+                                 "Sortie",ACTIVITY_MACRO), # à continuer dans le cas général et à faire aussi par type d'agent de soins
+         )
+  
+trace_example_final_b %>%
+  group_by(ACTIVITY_MACRO,WITH_1) %>% # Attention, il faudra considérer le type d'acteur de manière agrégée
+  summarize(time_in_minutes = sum(as.double(DATETIME_END) - as.double(DATETIME_BEGIN)) / 60) # Attention, il faudra calculer l'Effective Process Time
+```
+
+Attention ces temps ne sont pas tout à fait correcte pour notre type de modélisation, il faut prendre en compte des _Effective Time Process_ en prenant en compte aussi les temps morts des acteurs (cf Devoir 3)
+
+Pour vous aidez à parvenir à cette modélisation, une méthodologie vous est proposé :
+
+-   Commencez par une modélisation macro des activités générales simplement en regardant la probabilité d'occurence de celles-ci (en fonction aussi de si le patient est prioritaire ou non)
+    
+    -   Dans le cas de notre patient ID 10, on a en 4 : Accueil, Consultation (Même si c'est coupé en 2), Examen, Sortie
+    
+    -   Gardez l'ordre le plus fréquemment des activités observées (Accueil, Consultation, Examen ..., Sortie)
+    
+-   Dans chacune des activités macro, modélisez la probabilité de faire appel à chaque type d'acteur et dans le cas où un doit intervenir modéliser _l'Effective Time Process_ nécessaire avec une loi gamma (en fonction aussi de si le patient est prioritaire ou non)
+
+    -   Dans le cas de notre patient ID 10, on fait appel à 6 combinaisons activité / agents différents
+
+-   Comparer ce modèle simplifié construit avec la réalité observée et aussi avec un modèle plus détaillé qui n'agrégerait pas les différentes étapes et temps d'acteurs
+
+### Question 2) Simulation du service d'accueil sous Anylogic (/2.5)
+
+A l'aide d'Anylogic, construisez le modèle de simulation correspondant à ce que vous avez fait au devoir 3 avec un modèle à 1 serveur pour le bureau prioritaire et un modèle à 3 serveurs pour les autres. Vous testerez différents combinaisons de scénarios :
+
+- Arrivées réelles puis arrivées de poisson puis arrivées de poisson non homogènes
+
+- Temps services exponentiels puis gamma
+
+Pour les scénarios avec arrivées de poisson (homogènes et non homogènes), regarder l'évolution du niveau d'occupation et d'attente en fonction du taux lambda d'arrivé (différent de celui mesuré) et vérifiez bien que la saturation du service arrivé quand le taux d'arrivé atteint le taux de service maximal (quand $\rho \geq 1$).
+
+Finalement, à partir des arrivées réelles, testez le comportement du modèle pour différents nombre de serveurs avec un planning "dynamique" sur les tranches [8h;14h] et [14h;20h] avec 1 à 4 agents d'accueil disponibles par tranche (les patients prioritaires / non prioritaires peuvent être redirigés vers un autre bureau que celui où il doit aller initialement).
+
+### Question 3) Simulation du service d'urologie (/5)
+
+Avec la même méthodologie, et en considérant les circuits patients de la question 1, modélisez l'ensemble du service d'urologie sous Anylogic afin de répondre aux questions suivantes :
+
+    - En considérant un processus de Poisson non homogène avec les taux d'arrivées observées dans les données et le modèle de circuit patient de la question 1, quel est la configuration du planning sur les 2 tranches [8h;14h] et [14h;20h] qui **minimise le nombre d'agents moyen** sur la journée tout en évitant la saturation (tous les patients doivent avoir fini leur prise en charge avant 20h) ? 
+    
+    - En prenant en considération le niveau d'occupation avec cette configuration et le/les goulet(s) d'étranglement, proposez un planning un peu plus robuste / raisonnable (avec 1 ou 2 plannifications d'acteurs en plus sur les tranches de service) qui diminuerait drastiquement le niveau d'occupation / d'attente moyen.
+
+### Discussion supplémentaire (points complémentaires sur chaque question)
+
+Profitez en pour comparer votre modèle à la réalité.
+
+### Soutenance (/10)
+
+Préparez une **présentation orale de votre démarche**, de vos résulats et analyses de 15 min pour le **23/03**.

@@ -1,0 +1,142 @@
+---
+title: "FIE4-2-IMTNS-2-Devoir-3"
+author: "Adrien Wartelle"
+date: "2026-01-11"
+output: html_notebook # html_document
+---
+
+# Etude de cas sur l’analyse et la mesure de performance des Flux de Patients
+
+## Introduction
+
+Ce travail porte sur l'analyse des flux de patients sur un plateau mutualisé de consultations externes d'un hôpital. 
+L'objectif est de réaliser un diagnostic objectif de la performance organisationnelle du service d'urologie en s'appuyant sur les méthodes et outils d'analyse de flux vus précédemment ainsi que sur le langage R à travers l’environnement de RStudio. 
+La figure ci-dessous illustre les principaux flux ainsi que le Plan du plateau de consultations (voir fichiers PlanConsultations.pdf et ZoomURO.pdf consultables à partir http://bit.ly/PlansCHUTlse)
+
+<!--<img src="illustrations/PlanUro.png" alt="Plan du plateau de consultations" width="600"/>-->
+![*Plan du plateau de consultations*](illustrations/PlanUro.png "Plan du plateau de consultations")
+Afin de collecter des données sur les parcours suivis, les patients qui se sont présentés le 12/11/2015 ont été équipés d’une étiquette électronique (type RFID) qui a permis de tracer leurs parcours dans le plateau de consultation. 
+Les données collectées ont été fusionnées avec les données des outils de gestion des dossiers administratifs et médicaux utilisés par les personnels. 
+L'ensemble est disponible sous la forme d’un fichier log, illustré par le tableau suivant (voir annexe LogPatientUROseul_12112015.xlsx consultable à partir  http://bit.ly/logPatients). 
+
+<!--<img src="illustrations/TableauLogPatients.png" alt="Vue du tableau de données de log patient" width="600"/>-->
+![*Vue du tableau de données de log patient*](illustrations/TableauLogPatients.png "Vue du tableau de données de log patient")
+
+
+Les différentes de ce tableau de données sont :
+
+  - _ID_ (Col A) : Identifiant du patient
+  
+  - _Timestamp start_ (Col B) : horodatage entrée de zone ou salle 
+  
+  - _Timestamp end_ (Col C) : horodatage sortie de zone ou salle
+  
+  - _Activity\_MACRO_ (Col D) : Type d'activité
+  
+  - _Activity\_DETAILS_ (Col E) : Activité suivie et indice salle (i)
+  
+  - _Ress.Humaines_ (Col F) : Ressources humaines administratives ou soignantes intervenant dans l'activité
+  
+  - _distance parcourues_ (Col G) : Distance parcourue cumulée
+  
+  - _début/fin opX_ (Col H à O) : horodatage début/fin de chaque opération de prise en charge par une ressource administrative ou soignante (maxi 4 opérations par activité).
+
+## **Devoir 3 - Travail demandé** : Modélisation de file d'attente
+
+Ce travail, qui peut-être effectué en binôme, est à rendre pour le **01/03/2026** au format Rmd ou R (+pdf si besoin) avec pour titre "NOM_Prenom_FIE4-2-IMTNS-2-Devoir-3.*"
+
+Ce troisième devoir va se focaliser sur la modélisation du service d'accueil. Après une extraction générale des modèles, il vaut sera demandé d'étudier un ensemble de modèle en les comparant quantitativement à la réalité et entre eux sur la base des mesures empiriques et des formules données par la théorie des files d'attente.
+
+```{r include=FALSE}
+library(tidyverse)
+library(data.table)
+library(readxl)
+
+load("local_data/trace_example_1.RData")
+load("local_data/trace_example_final.RData")
+load("local_data/devoir3_data_accueil.RData")
+```
+
+### Question 1) Extraction des paramètres (/5)
+
+L'objectif de cette question est d'extraire les temps d'arrivées, de départ de file et de départ de l'accueil de chaque patient et d'en extraire les paramètres empiriques de taux d'arrivée et de service.
+
+1.1) Dans un premier temps nous allons reformater les données afin de faciliter l'extraction en extrayant pour chaque patient :
+
+-   $td$ : La datetime de départ du service d’accueil
+-   $ta$ : La datetime d'arrivée au service d’accueil
+-   $tdq$ : La datetime de sortie de file. **Attention**, on ne souhaite pas la datetime de sortie physique de la salle d'attente mais plutôt la datetime à partir de laquelle le bureau qui le prend en charge devient disponible pour obtenir des temps de process qui soit effectif (notion de _Effective Process Time_). On applique pour chaque bureau et chaque patient.
+-   $S=tdq - td$
+
+    -   $tdq_m = max(ta_m,td_{m-1})$ (avec $m > 1$ correspondant aux indices de patient dans l'ordre de **service** du bureau concerné, pour $m=1$ on prendra $tdq_1 = ta_1$)
+    
+Vous devriez obtenir le tableau suivant :
+
+```{r}
+devoir3_data_accueil
+```
+
+
+1.2) Calculez les indicateurs suivant :
+
+-   $\lambda$ : Taux d'arrivée moyen global sur la journée (de 8h à 18h)
+
+-   $\lambda_{Prio}$ : Taux d'arrivée moyen pour le bureau d'accueil prioritaire
+
+-   $\lambda_{Autres}$ : Taux d'arrivée moyen pour les 3 autres bureaux
+
+-   $\lambda_{[8h;11h20]}, \lambda_{[11h20;14h40]},\lambda_{[14h40;18h00]}$ : Taux d'arrivée sur 3 les tranches des 10h d'activité
+
+-   $\lambda_{[8h;11h20],Prio}, \lambda_{[11h20;14h40],Prio},\lambda_{[14h40;18h00],Prio}$ : Taux d'arrivée sur 3 les tranches des 10h d'activité pour le bureau d'accueil prioritaire
+
+-   $\lambda_{[8h;11h20],Autres}, \lambda_{[11h20;14h40],Autres},\lambda_{[14h40;18h00],Autres}$ : Taux d'arrivée sur 3 les tranches des 10h d'activité pour les 3 autres bureaux
+
+-   $\mu = \frac{1}{\bar{S}}$ : Taux de service moyen 
+
+-   $\mu_{Prio} = \frac{1}{\bar{S_{Prio}}}$ : Taux de service moyen pour le bureau d'accueil prioritaire
+
+-   $\mu_{Autres} = \frac{1}{\bar{S_{Prio}}}$ : Taux de service moyen pour les 3 autres bureaux
+
+-   $cv_S$ : Coefficient de variation du temps de service général
+
+-   $cv_{S_{Prio}}$ : Coefficient de variation du temps de service général pour le bureau d'accueil prioritaire
+
+-   $cv_{S_{Autres}}$ : Coefficient de variation du temps de service général pour les 3 autres bureaux
+
+-   $W,W_{Prio},W_{Autres},W_q,W_{q,Prio},W_{q,Autres}...$ : Indicateurs de temps d'attente (aussi pour chacune des 3 tranches de journée)
+
+-   $L,L_{Prio},L_{Autres},L_q,L_{q,Prio},L_{q,Autres}...$ : Indicateurs de niveau d'occupation moyen entre 8h et 18h (aussi pour chacune des 3 tranches de journée)
+
+1.3) Analyse et discussion : Approfondissez l'EDA du devoir 1 sur la partie Accueil. Des plots temporels sur les indicateurs peuvent vous aider.
+
+### Question 2) Modélisation du bureau d'accueil prioritaire (/5)
+
+On commence à étudier le service du bureau d'accueil prioritaire comme un système à 1 serveur. N'oubliez pas de comparer à la réalité en tenant compte des approximations et hypothèses de modélisation implicites qui expliquerait des divergences.
+
+2.1) Étudiez le modèle $M/M/1$ avec le taux de service $\mu_{Prio}$ et en regardant pour différent taux d'arrivée, en particulier $\lambda_{Prio},\lambda_{[8h;11h20],Prio}, \lambda_{[11h20;14h40],Prio}, \lambda_{[14h40;18h00,Prio]}$.
+
+2.2) Faites de même avec le modèle le modèle $M/G/1$ et grâce aux formules de Pollaczek-Khinchine (souvent abrégées formules P-K, voir Shortle et al. 2018 section 5).
+
+### Question 3) Modélisation des bureaux d'accueil non prioritaires (/5)
+
+On continue avec les 3 autres bureaux.
+
+3.1) Étudiez le modèle $M/M/3$ avec le taux de service $\mu_{Autres}$ et en regardant pour différent taux d'arrivée, en particulier $\lambda_{Autres},\lambda_{[8h;11h20],Autres}, \lambda_{[11h20;14h40],Autres}, \lambda_{[14h40;18h00,Autres]}$.
+
+3.2) Étudiez le modèles comme un processus Markovien général avec un taux de service $mu_{Autres,i}$ qui dépend du niveau d'occupation et pour différent taux d'arrivée, en particulier $\lambda_{Autres},\lambda_{[8h;11h20],Autres}, \lambda_{[11h20;14h40],Autres}, \lambda_{[14h40;18h00,Autres]}$. **Attention** il vous faudra déterminer ces valeurs en analysant le taux de départ des 3 bureaux selon le niveau d'occupation.
+
+### Question 4) Modélisation alternative bureaux d'accueil comme d'un système à priorité (/5)
+
+Supposons que le service d'accueil deviennent beaucoup plus performant et que les **temps de service moyens soient divisés par 4**. On se retrouve maintenant avec un système à 2 classes de priorité ($PC=2$) (cf Shortle et al. (2018), section 4.4, p172)
+
+4.1) Etudiez le modèle $M/M/1/PC=2$ avec un taux d'arrivée  $\lambda$ constant sur la journée et $\frac{\mu}{4} = \frac{1}{4\bar{S}}$
+
+4.2) Etudiez le modèle $M/M/1/PC=2$ avec un taux d'arrivée  $\lambda$ constant sur la journée et un taux de service selon le type de patient $\frac{\mu_{1}}{4} = \frac{\mu_{Prio}}{4} = \frac{1}{4\bar{S}_{Prio}}$, $\frac{\mu_{2}}{4} = \frac{\mu_{Autres}}{4} = \frac{1}{4\bar{S}_{Autres}}$ 
+
+### Discussion supplémentaire (points complémentaires sur chaque question)
+
+Pour tout point à approfondir sur la discussion globale des modèles et de leur comparaison qui n'aurait pas pu être fait avant .... 
+
+### Question bonus (+1)
+
+En utilisant la théorie des files d'attentes et _l'Effective Process Time_ pour les temps de service, on a simplifié grandement le comportement du système. Proposez des points précis pour obtenir une modélisation plus complète des services, en particulier pour un modèle de simulation détaillé, et en quoi cela améliorait le modèle tout en considérant les risques de modélisation que cela engendrerait.
