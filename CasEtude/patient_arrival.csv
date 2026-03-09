@@ -1,0 +1,2314 @@
+id;activity_seq;activity
+1;1;Triage IOA
+1;2;Examen Init CC
+1;3;Examen Radio
+1;4;Analyse
+1;5;Post Soins
+1;6;Sortie UHCD
+2;1;Triage IOA
+2;2;Examen Init CC
+2;3;Post Soins
+2;4;Sortie Domicile
+3;1;Triage IOA
+3;2;Examen Init CC
+3;3;Sortie Domicile
+4;1;Triage IOA
+4;2;Examen Init CL
+4;3;Examen Radio
+4;4;Analyse
+4;5;Post Soins
+4;6;Sortie UHCD
+5;1;Triage IOA
+5;2;Examen Init CL
+5;3;Examen Radio
+5;4;Analyse
+5;5;Post Soins
+5;6;Sortie UHCD
+6;1;Triage IOA
+6;2;Examen Init CL
+6;3;Examen Radio
+6;4;Analyse
+6;5;Post Soins
+6;6;Sortie Domicile
+7;1;Triage IOA
+7;2;Examen Init CL
+7;3;Examen Radio
+7;4;Analyse
+7;5;Post Soins
+7;6;Sortie UHCD
+8;1;Triage IOA
+8;2;Examen Init CC
+8;3;Post Soins
+8;4;Sortie Domicile
+9;1;Triage IOA
+9;2;Examen Init CL
+9;3;Examen Radio
+9;4;Post Soins
+9;5;Sortie Domicile
+10;1;Triage IOA
+10;2;Examen Init CL
+10;3;Examen Radio
+10;4;Analyse
+10;5;Post Soins
+10;6;Sortie UHCD
+11;1;Triage IOA
+11;2;Examen Init CC
+11;3;Examen Radio
+11;4;Post Soins
+11;5;Sortie Domicile
+12;1;Triage IOA
+12;2;Examen Init CC
+12;3;Sortie Domicile
+13;1;Triage IOA
+13;2;Examen Init CC
+13;3;Sortie Domicile
+14;1;Triage IOA
+14;2;Examen Init CC
+14;3;Analyse
+14;4;Post Soins
+14;5;Sortie Domicile
+15;1;Triage IOA
+15;2;Examen Init CC
+15;3;Sortie Domicile
+16;1;Triage IOA
+16;2;Examen Init CL
+16;3;Post Soins
+16;4;Sortie UHCD
+17;1;Triage IOA
+17;2;Examen Init CC
+17;3;Sortie Domicile
+18;1;Triage IOA
+18;2;Examen Init CL
+18;3;Examen Radio
+18;4;Analyse
+18;5;Post Soins
+18;6;Sortie UHCD
+19;1;Triage IOA
+19;2;Examen Init CC
+19;3;Analyse
+19;4;Post Soins
+19;5;Sortie Domicile
+20;1;Triage IOA
+20;2;Examen Init CC
+20;3;Post Soins
+20;4;Sortie Domicile
+21;1;Triage IOA
+21;2;Examen Init CL
+21;3;Examen Radio
+21;4;Analyse
+21;5;Post Soins
+21;6;Sortie Transfert
+22;1;Triage IOA
+22;2;Examen Init CC
+22;3;Post Soins
+22;4;Sortie Domicile
+23;1;Triage IOA
+23;2;Examen Init CC
+23;3;Analyse
+23;4;Post Soins
+23;5;Sortie UHCD
+24;1;Triage IOA
+24;2;Examen Init CC
+24;3;Sortie Domicile
+25;1;Triage IOA
+25;2;Examen Init CC
+25;3;Sortie Domicile
+26;1;Triage IOA
+26;2;Examen Init CC
+26;3;Analyse
+26;4;Post Soins
+26;5;Sortie UHCD
+27;1;Triage IOA
+27;2;Examen Init CL
+27;3;Examen Radio
+27;4;Analyse
+27;5;Post Soins
+27;6;Sortie UHCD
+28;1;Triage IOA
+28;2;Examen Init CC
+28;3;Post Soins
+28;4;Sortie UHCD
+29;1;Triage IOA
+29;2;Examen Init CL
+29;3;Examen Radio
+29;4;Analyse
+29;5;Post Soins
+29;6;Sortie UHCD
+30;1;Triage IOA
+30;2;Examen Init CL
+30;3;Examen Radio
+30;4;Analyse
+30;5;Post Soins
+30;6;Sortie UHCD
+31;1;Triage IOA
+31;2;Examen Init CC
+31;3;Sortie Domicile
+32;1;Triage IOA
+32;2;Examen Init CC
+32;3;Examen Radio
+32;4;Post Soins
+32;5;Sortie Domicile
+33;1;Triage IOA
+33;2;Examen Init CC
+33;3;Sortie Domicile
+34;1;Triage IOA
+34;2;Examen Init CL
+34;3;Examen Radio
+34;4;Analyse
+34;5;Post Soins
+34;6;Sortie UHCD
+35;1;Triage IOA
+35;2;Examen Init CC
+35;3;Sortie Domicile
+36;1;Triage IOA
+36;2;Examen Init CC
+36;3;Examen Radio
+36;4;Analyse
+36;5;Post Soins
+36;6;Sortie Domicile
+37;1;Triage IOA
+37;2;Examen Init CC
+37;3;Sortie Domicile
+38;1;Triage IOA
+38;2;Examen Init CC
+38;3;Sortie Domicile
+39;1;Triage IOA
+39;2;Examen Init CC
+39;3;Post Soins
+39;4;Sortie Domicile
+40;1;Triage IOA
+40;2;Examen Init CL
+40;3;Examen Radio
+40;4;Analyse
+40;5;Post Soins
+40;6;Sortie UHCD
+41;1;Triage IOA
+41;2;Examen Init CC
+41;3;Sortie Domicile
+42;1;Triage IOA
+42;2;Examen Init CC
+42;3;Analyse
+42;4;Post Soins
+42;5;Sortie Domicile
+43;1;Triage IOA
+43;2;Examen Init CC
+43;3;Sortie Domicile
+44;1;Triage IOA
+44;2;Examen Init CL
+44;3;Examen Radio
+44;4;Analyse
+44;5;Post Soins
+44;6;Sortie UHCD
+45;1;Triage IOA
+45;2;Examen Init CC
+45;3;Sortie Domicile
+46;1;Triage IOA
+46;2;Examen Init CC
+46;3;Examen Radio
+46;4;Post Soins
+46;5;Sortie UHCD
+47;1;Triage IOA
+47;2;Examen Init CL
+47;3;Examen Radio
+47;4;Analyse
+47;5;Post Soins
+47;6;Sortie UHCD
+48;1;Triage IOA
+48;2;Examen Init CC
+48;3;Sortie Domicile
+49;1;Triage IOA
+49;2;Examen Init CL
+49;3;Examen Radio
+49;4;Analyse
+49;5;Post Soins
+49;6;Sortie Domicile
+50;1;Triage IOA
+50;2;Examen Init CC
+50;3;Analyse
+50;4;Post Soins
+50;5;Sortie UHCD
+51;1;Triage IOA
+51;2;Examen Init CL
+51;3;Analyse
+51;4;Post Soins
+51;5;Sortie UHCD
+52;1;Triage IOA
+52;2;Examen Init CC
+52;3;Examen Radio
+52;4;Analyse
+52;5;Post Soins
+52;6;Sortie Domicile
+53;1;Triage IOA
+53;2;Examen Init CC
+53;3;Post Soins
+53;4;Sortie UHCD
+54;1;Triage IOA
+54;2;Examen Init CC
+54;3;Sortie Domicile
+55;1;Triage IOA
+55;2;Examen Init CL
+55;3;Analyse
+55;4;Post Soins
+55;5;Sortie Domicile
+56;1;Triage IOA
+56;2;Examen Init CL
+56;3;Examen Radio
+56;4;Analyse
+56;5;Post Soins
+56;6;Sortie Transfert
+57;1;Triage IOA
+57;2;Examen Init CL
+57;3;Examen Radio
+57;4;Analyse
+57;5;Post Soins
+57;6;Sortie UHCD
+58;1;Triage IOA
+58;2;Examen Init CL
+58;3;Examen Radio
+58;4;Post Soins
+58;5;Sortie Domicile
+59;1;Triage IOA
+59;2;Examen Init CC
+59;3;Sortie Domicile
+60;1;Triage IOA
+60;2;Examen Init CL
+60;3;Examen Radio
+60;4;Analyse
+60;5;Post Soins
+60;6;Sortie UHCD
+61;1;Triage IOA
+61;2;Examen Init CL
+61;3;Examen Radio
+61;4;Analyse
+61;5;Post Soins
+61;6;Sortie Domicile
+62;1;Triage IOA
+62;2;Examen Init CL
+62;3;Examen Radio
+62;4;Post Soins
+62;5;Sortie UHCD
+63;1;Triage IOA
+63;2;Examen Init CC
+63;3;Sortie Domicile
+64;1;Triage IOA
+64;2;Examen Init CC
+64;3;Sortie Domicile
+65;1;Triage IOA
+65;2;Examen Init CC
+65;3;Sortie Domicile
+66;1;Triage IOA
+66;2;Examen Init CC
+66;3;Analyse
+66;4;Post Soins
+66;5;Sortie Domicile
+67;1;Triage IOA
+67;2;Examen Init CC
+67;3;Sortie Domicile
+68;1;Triage IOA
+68;2;Examen Init CC
+68;3;Sortie Domicile
+69;1;Triage IOA
+69;2;Examen Init CL
+69;3;Examen Radio
+69;4;Analyse
+69;5;Post Soins
+69;6;Sortie Domicile
+70;1;Triage IOA
+70;2;Examen Init CL
+70;3;Examen Radio
+70;4;Analyse
+70;5;Post Soins
+70;6;Sortie UHCD
+71;1;Triage IOA
+71;2;Examen Init CC
+71;3;Sortie Domicile
+72;1;Triage IOA
+72;2;Examen Init CC
+72;3;Sortie Domicile
+73;1;Triage IOA
+73;2;Examen Init CL
+73;3;Examen Radio
+73;4;Analyse
+73;5;Post Soins
+73;6;Sortie UHCD
+74;1;Triage IOA
+74;2;Examen Init CL
+74;3;Examen Radio
+74;4;Analyse
+74;5;Post Soins
+74;6;Sortie UHCD
+75;1;Triage IOA
+75;2;Examen Init CC
+75;3;Sortie Domicile
+76;1;Triage IOA
+76;2;Examen Init CC
+76;3;Analyse
+76;4;Post Soins
+76;5;Sortie Domicile
+77;1;Triage IOA
+77;2;Examen Init CL
+77;3;Examen Radio
+77;4;Analyse
+77;5;Post Soins
+77;6;Sortie UHCD
+78;1;Triage IOA
+78;2;Examen Init CL
+78;3;Examen Radio
+78;4;Analyse
+78;5;Post Soins
+78;6;Sortie UHCD
+79;1;Triage IOA
+79;2;Examen Init CC
+79;3;Sortie Domicile
+80;1;Triage IOA
+80;2;Examen Init CC
+80;3;Sortie Domicile
+81;1;Triage IOA
+81;2;Examen Init CL
+81;3;Examen Radio
+81;4;Analyse
+81;5;Post Soins
+81;6;Sortie UHCD
+82;1;Triage IOA
+82;2;Examen Init CC
+82;3;Analyse
+82;4;Post Soins
+82;5;Sortie Transfert
+83;1;Triage IOA
+83;2;Examen Init CC
+83;3;Analyse
+83;4;Post Soins
+83;5;Sortie Domicile
+84;1;Triage IOA
+84;2;Examen Init CC
+84;3;Examen Radio
+84;4;Analyse
+84;5;Post Soins
+84;6;Sortie Domicile
+85;1;Triage IOA
+85;2;Examen Init CL
+85;3;Examen Radio
+85;4;Post Soins
+85;5;Sortie Domicile
+86;1;Triage IOA
+86;2;Examen Init CC
+86;3;Sortie Domicile
+87;1;Triage IOA
+87;2;Examen Init CC
+87;3;Sortie Domicile
+88;1;Triage IOA
+88;2;Examen Init CL
+88;3;Examen Radio
+88;4;Analyse
+88;5;Post Soins
+88;6;Sortie UHCD
+89;1;Triage IOA
+89;2;Examen Init CL
+89;3;Examen Radio
+89;4;Analyse
+89;5;Post Soins
+89;6;Sortie Domicile
+90;1;Triage IOA
+90;2;Examen Init CC
+90;3;Sortie Domicile
+91;1;Triage IOA
+91;2;Examen Init CC
+91;3;Examen Radio
+91;4;Analyse
+91;5;Post Soins
+91;6;Sortie Domicile
+92;1;Triage IOA
+92;2;Examen Init CC
+92;3;Sortie Domicile
+93;1;Triage IOA
+93;2;Examen Init CC
+93;3;Sortie Domicile
+94;1;Triage IOA
+94;2;Examen Init CC
+94;3;Sortie Domicile
+95;1;Triage IOA
+95;2;Examen Init CC
+95;3;Post Soins
+95;4;Sortie Domicile
+96;1;Triage IOA
+96;2;Examen Init CL
+96;3;Analyse
+96;4;Post Soins
+96;5;Sortie UHCD
+97;1;Triage IOA
+97;2;Examen Init CC
+97;3;Sortie Domicile
+98;1;Triage IOA
+98;2;Examen Init CC
+98;3;Examen Radio
+98;4;Post Soins
+98;5;Sortie Domicile
+99;1;Triage IOA
+99;2;Examen Init CC
+99;3;Sortie Domicile
+100;1;Triage IOA
+100;2;Examen Init CC
+100;3;Sortie Domicile
+101;1;Triage IOA
+101;2;Examen Init CL
+101;3;Examen Radio
+101;4;Analyse
+101;5;Post Soins
+101;6;Sortie Domicile
+102;1;Triage IOA
+102;2;Examen Init CC
+102;3;Sortie Domicile
+103;1;Triage IOA
+103;2;Examen Init CL
+103;3;Examen Radio
+103;4;Analyse
+103;5;Post Soins
+103;6;Sortie Domicile
+104;1;Triage IOA
+104;2;Examen Init CC
+104;3;Post Soins
+104;4;Sortie Domicile
+105;1;Triage IOA
+105;2;Examen Init CC
+105;3;Sortie Domicile
+106;1;Triage IOA
+106;2;Examen Init CC
+106;3;Examen Radio
+106;4;Analyse
+106;5;Post Soins
+106;6;Sortie Domicile
+107;1;Triage IOA
+107;2;Examen Init CC
+107;3;Examen Radio
+107;4;Post Soins
+107;5;Sortie Domicile
+108;1;Triage IOA
+108;2;Examen Init CC
+108;3;Post Soins
+108;4;Sortie Domicile
+109;1;Triage IOA
+109;2;Examen Init CC
+109;3;Examen Radio
+109;4;Post Soins
+109;5;Sortie Domicile
+110;1;Triage IOA
+110;2;Examen Init CC
+110;3;Sortie Domicile
+111;1;Triage IOA
+111;2;Examen Init CC
+111;3;Examen Radio
+111;4;Post Soins
+111;5;Sortie UHCD
+112;1;Triage IOA
+112;2;Examen Init CL
+112;3;Examen Radio
+112;4;Analyse
+112;5;Post Soins
+112;6;Sortie UHCD
+113;1;Triage IOA
+113;2;Examen Init CC
+113;3;Analyse
+113;4;Post Soins
+113;5;Sortie Domicile
+114;1;Triage IOA
+114;2;Examen Init CC
+114;3;Sortie Domicile
+115;1;Triage IOA
+115;2;Examen Init CL
+115;3;Examen Radio
+115;4;Analyse
+115;5;Post Soins
+115;6;Sortie UHCD
+116;1;Triage IOA
+116;2;Examen Init CL
+116;3;Analyse
+116;4;Post Soins
+116;5;Sortie UHCD
+117;1;Triage IOA
+117;2;Examen Init CL
+117;3;Examen Radio
+117;4;Analyse
+117;5;Post Soins
+117;6;Sortie Domicile
+118;1;Triage IOA
+118;2;Examen Init CL
+118;3;Examen Radio
+118;4;Analyse
+118;5;Post Soins
+118;6;Sortie Domicile
+119;1;Triage IOA
+119;2;Examen Init CL
+119;3;Analyse
+119;4;Post Soins
+119;5;Sortie UHCD
+120;1;Triage IOA
+120;2;Examen Init CC
+120;3;Analyse
+120;4;Post Soins
+120;5;Sortie Domicile
+121;1;Triage IOA
+121;2;Examen Init CL
+121;3;Examen Radio
+121;4;Analyse
+121;5;Post Soins
+121;6;Sortie UHCD
+122;1;Triage IOA
+122;2;Examen Init CL
+122;3;Examen Radio
+122;4;Analyse
+122;5;Post Soins
+122;6;Sortie UHCD
+123;1;Triage IOA
+123;2;Examen Init CL
+123;3;Examen Radio
+123;4;Analyse
+123;5;Post Soins
+123;6;Sortie UHCD
+124;1;Triage IOA
+124;2;Examen Init CL
+124;3;Examen Radio
+124;4;Analyse
+124;5;Post Soins
+124;6;Sortie UHCD
+125;1;Triage IOA
+125;2;Examen Init CL
+125;3;Examen Radio
+125;4;Analyse
+125;5;Post Soins
+125;6;Sortie UHCD
+126;1;Triage IOA
+126;2;Examen Init CC
+126;3;Sortie Domicile
+127;1;Triage IOA
+127;2;Examen Init CC
+127;3;Post Soins
+127;4;Sortie UHCD
+128;1;Triage IOA
+128;2;Examen Init CL
+128;3;Examen Radio
+128;4;Analyse
+128;5;Post Soins
+128;6;Sortie UHCD
+129;1;Triage IOA
+129;2;Examen Init CL
+129;3;Examen Radio
+129;4;Analyse
+129;5;Post Soins
+129;6;Sortie Domicile
+130;1;Triage IOA
+130;2;Examen Init CL
+130;3;Examen Radio
+130;4;Post Soins
+130;5;Sortie UHCD
+131;1;Triage IOA
+131;2;Examen Init CC
+131;3;Sortie Domicile
+132;1;Triage IOA
+132;2;Examen Init CL
+132;3;Examen Radio
+132;4;Analyse
+132;5;Post Soins
+132;6;Sortie UHCD
+133;1;Triage IOA
+133;2;Examen Init CL
+133;3;Examen Radio
+133;4;Post Soins
+133;5;Sortie UHCD
+134;1;Triage IOA
+134;2;Examen Init CC
+134;3;Sortie Domicile
+135;1;Triage IOA
+135;2;Examen Init CC
+135;3;Examen Radio
+135;4;Post Soins
+135;5;Sortie Domicile
+136;1;Triage IOA
+136;2;Examen Init CC
+136;3;Post Soins
+136;4;Sortie Domicile
+137;1;Triage IOA
+137;2;Examen Init CL
+137;3;Post Soins
+137;4;Sortie UHCD
+138;1;Triage IOA
+138;2;Examen Init CL
+138;3;Examen Radio
+138;4;Analyse
+138;5;Post Soins
+138;6;Sortie UHCD
+139;1;Triage IOA
+139;2;Examen Init CL
+139;3;Examen Radio
+139;4;Analyse
+139;5;Post Soins
+139;6;Sortie Domicile
+140;1;Triage IOA
+140;2;Examen Init CL
+140;3;Examen Radio
+140;4;Analyse
+140;5;Post Soins
+140;6;Sortie UHCD
+141;1;Triage IOA
+141;2;Examen Init CC
+141;3;Examen Radio
+141;4;Post Soins
+141;5;Sortie Domicile
+142;1;Triage IOA
+142;2;Examen Init CL
+142;3;Analyse
+142;4;Post Soins
+142;5;Sortie UHCD
+143;1;Triage IOA
+143;2;Examen Init CC
+143;3;Sortie Domicile
+144;1;Triage IOA
+144;2;Examen Init CL
+144;3;Examen Radio
+144;4;Analyse
+144;5;Post Soins
+144;6;Sortie UHCD
+145;1;Triage IOA
+145;2;Examen Init CL
+145;3;Examen Radio
+145;4;Analyse
+145;5;Post Soins
+145;6;Sortie UHCD
+146;1;Triage IOA
+146;2;Examen Init CL
+146;3;Examen Radio
+146;4;Analyse
+146;5;Post Soins
+146;6;Sortie Domicile
+147;1;Triage IOA
+147;2;Examen Init CC
+147;3;Examen Radio
+147;4;Analyse
+147;5;Post Soins
+147;6;Sortie Domicile
+148;1;Triage IOA
+148;2;Examen Init CL
+148;3;Examen Radio
+148;4;Post Soins
+148;5;Sortie UHCD
+149;1;Triage IOA
+149;2;Examen Init CL
+149;3;Examen Radio
+149;4;Analyse
+149;5;Post Soins
+149;6;Sortie UHCD
+150;1;Triage IOA
+150;2;Examen Init CC
+150;3;Examen Radio
+150;4;Analyse
+150;5;Post Soins
+150;6;Sortie UHCD
+151;1;Triage IOA
+151;2;Examen Init CC
+151;3;Examen Radio
+151;4;Analyse
+151;5;Post Soins
+151;6;Sortie Domicile
+152;1;Triage IOA
+152;2;Examen Init CC
+152;3;Sortie Domicile
+153;1;Triage IOA
+153;2;Examen Init CL
+153;3;Examen Radio
+153;4;Analyse
+153;5;Post Soins
+153;6;Sortie Transfert
+154;1;Triage IOA
+154;2;Examen Init CC
+154;3;Examen Radio
+154;4;Analyse
+154;5;Post Soins
+154;6;Sortie Domicile
+155;1;Triage IOA
+155;2;Examen Init CL
+155;3;Examen Radio
+155;4;Analyse
+155;5;Post Soins
+155;6;Sortie UHCD
+156;1;Triage IOA
+156;2;Examen Init CL
+156;3;Examen Radio
+156;4;Analyse
+156;5;Post Soins
+156;6;Sortie Domicile
+157;1;Triage IOA
+157;2;Examen Init CC
+157;3;Examen Radio
+157;4;Post Soins
+157;5;Sortie UHCD
+158;1;Triage IOA
+158;2;Examen Init CC
+158;3;Examen Radio
+158;4;Post Soins
+158;5;Sortie Domicile
+159;1;Triage IOA
+159;2;Examen Init CC
+159;3;Sortie Domicile
+160;1;Triage IOA
+160;2;Examen Init CL
+160;3;Examen Radio
+160;4;Analyse
+160;5;Post Soins
+160;6;Sortie UHCD
+161;1;Triage IOA
+161;2;Examen Init CL
+161;3;Examen Radio
+161;4;Analyse
+161;5;Post Soins
+161;6;Sortie UHCD
+162;1;Triage IOA
+162;2;Examen Init CC
+162;3;Sortie Domicile
+163;1;Triage IOA
+163;2;Examen Init CC
+163;3;Analyse
+163;4;Post Soins
+163;5;Sortie UHCD
+164;1;Triage IOA
+164;2;Examen Init CC
+164;3;Sortie Domicile
+165;1;Triage IOA
+165;2;Examen Init CC
+165;3;Sortie Domicile
+166;1;Triage IOA
+166;2;Examen Init CC
+166;3;Sortie Domicile
+167;1;Triage IOA
+167;2;Examen Init CC
+167;3;Sortie Domicile
+168;1;Triage IOA
+168;2;Examen Init CC
+168;3;Sortie Domicile
+169;1;Triage IOA
+169;2;Examen Init CC
+169;3;Examen Radio
+169;4;Analyse
+169;5;Post Soins
+169;6;Sortie Domicile
+170;1;Triage IOA
+170;2;Examen Init CC
+170;3;Examen Radio
+170;4;Post Soins
+170;5;Sortie Domicile
+171;1;Triage IOA
+171;2;Examen Init CC
+171;3;Sortie Domicile
+172;1;Triage IOA
+172;2;Examen Init CL
+172;3;Examen Radio
+172;4;Analyse
+172;5;Post Soins
+172;6;Sortie Domicile
+173;1;Triage IOA
+173;2;Examen Init CC
+173;3;Examen Radio
+173;4;Analyse
+173;5;Post Soins
+173;6;Sortie UHCD
+174;1;Triage IOA
+174;2;Examen Init CL
+174;3;Examen Radio
+174;4;Analyse
+174;5;Post Soins
+174;6;Sortie Domicile
+175;1;Triage IOA
+175;2;Examen Init CL
+175;3;Examen Radio
+175;4;Analyse
+175;5;Post Soins
+175;6;Sortie Transfert
+176;1;Triage IOA
+176;2;Examen Init CL
+176;3;Analyse
+176;4;Post Soins
+176;5;Sortie UHCD
+177;1;Triage IOA
+177;2;Examen Init CC
+177;3;Sortie Domicile
+178;1;Triage IOA
+178;2;Examen Init CL
+178;3;Examen Radio
+178;4;Post Soins
+178;5;Sortie Domicile
+179;1;Triage IOA
+179;2;Examen Init CC
+179;3;Sortie Domicile
+180;1;Triage IOA
+180;2;Examen Init CL
+180;3;Examen Radio
+180;4;Analyse
+180;5;Post Soins
+180;6;Sortie UHCD
+181;1;Triage IOA
+181;2;Examen Init CC
+181;3;Sortie Domicile
+182;1;Triage IOA
+182;2;Examen Init CC
+182;3;Sortie Domicile
+183;1;Triage IOA
+183;2;Examen Init CL
+183;3;Examen Radio
+183;4;Analyse
+183;5;Post Soins
+183;6;Sortie Domicile
+184;1;Triage IOA
+184;2;Examen Init CC
+184;3;Analyse
+184;4;Post Soins
+184;5;Sortie Domicile
+185;1;Triage IOA
+185;2;Examen Init CL
+185;3;Examen Radio
+185;4;Analyse
+185;5;Post Soins
+185;6;Sortie Domicile
+186;1;Triage IOA
+186;2;Examen Init CC
+186;3;Post Soins
+186;4;Sortie UHCD
+187;1;Triage IOA
+187;2;Examen Init CL
+187;3;Examen Radio
+187;4;Analyse
+187;5;Post Soins
+187;6;Sortie Domicile
+188;1;Triage IOA
+188;2;Examen Init CL
+188;3;Examen Radio
+188;4;Post Soins
+188;5;Sortie UHCD
+189;1;Triage IOA
+189;2;Examen Init CL
+189;3;Examen Radio
+189;4;Analyse
+189;5;Post Soins
+189;6;Sortie UHCD
+190;1;Triage IOA
+190;2;Examen Init CC
+190;3;Sortie Domicile
+191;1;Triage IOA
+191;2;Examen Init CC
+191;3;Sortie Domicile
+192;1;Triage IOA
+192;2;Examen Init CL
+192;3;Examen Radio
+192;4;Analyse
+192;5;Post Soins
+192;6;Sortie UHCD
+193;1;Triage IOA
+193;2;Examen Init CL
+193;3;Examen Radio
+193;4;Analyse
+193;5;Post Soins
+193;6;Sortie UHCD
+194;1;Triage IOA
+194;2;Examen Init CL
+194;3;Examen Radio
+194;4;Analyse
+194;5;Post Soins
+194;6;Sortie Domicile
+195;1;Triage IOA
+195;2;Examen Init CL
+195;3;Analyse
+195;4;Post Soins
+195;5;Sortie UHCD
+196;1;Triage IOA
+196;2;Examen Init CC
+196;3;Examen Radio
+196;4;Post Soins
+196;5;Sortie Domicile
+197;1;Triage IOA
+197;2;Examen Init CC
+197;3;Sortie Domicile
+198;1;Triage IOA
+198;2;Examen Init CL
+198;3;Examen Radio
+198;4;Analyse
+198;5;Post Soins
+198;6;Sortie UHCD
+199;1;Triage IOA
+199;2;Examen Init CC
+199;3;Sortie Domicile
+200;1;Triage IOA
+200;2;Examen Init CL
+200;3;Examen Radio
+200;4;Analyse
+200;5;Post Soins
+200;6;Sortie Domicile
+201;1;Triage IOA
+201;2;Examen Init CC
+201;3;Sortie Domicile
+202;1;Triage IOA
+202;2;Examen Init CC
+202;3;Sortie Domicile
+203;1;Triage IOA
+203;2;Examen Init CC
+203;3;Sortie Domicile
+204;1;Triage IOA
+204;2;Examen Init CC
+204;3;Sortie Domicile
+205;1;Triage IOA
+205;2;Examen Init CC
+205;3;Post Soins
+205;4;Sortie Domicile
+206;1;Triage IOA
+206;2;Examen Init CC
+206;3;Analyse
+206;4;Post Soins
+206;5;Sortie Domicile
+207;1;Triage IOA
+207;2;Examen Init CL
+207;3;Examen Radio
+207;4;Post Soins
+207;5;Sortie UHCD
+208;1;Triage IOA
+208;2;Examen Init CC
+208;3;Examen Radio
+208;4;Analyse
+208;5;Post Soins
+208;6;Sortie Domicile
+209;1;Triage IOA
+209;2;Examen Init CC
+209;3;Examen Radio
+209;4;Analyse
+209;5;Post Soins
+209;6;Sortie Domicile
+210;1;Triage IOA
+210;2;Examen Init CC
+210;3;Examen Radio
+210;4;Post Soins
+210;5;Sortie Domicile
+211;1;Triage IOA
+211;2;Examen Init CC
+211;3;Analyse
+211;4;Post Soins
+211;5;Sortie Domicile
+212;1;Triage IOA
+212;2;Examen Init CL
+212;3;Examen Radio
+212;4;Analyse
+212;5;Post Soins
+212;6;Sortie UHCD
+213;1;Triage IOA
+213;2;Examen Init CL
+213;3;Examen Radio
+213;4;Post Soins
+213;5;Sortie Domicile
+214;1;Triage IOA
+214;2;Examen Init CL
+214;3;Examen Radio
+214;4;Post Soins
+214;5;Sortie Domicile
+215;1;Triage IOA
+215;2;Examen Init CL
+215;3;Analyse
+215;4;Post Soins
+215;5;Sortie Domicile
+216;1;Triage IOA
+216;2;Examen Init CL
+216;3;Examen Radio
+216;4;Analyse
+216;5;Post Soins
+216;6;Sortie UHCD
+217;1;Triage IOA
+217;2;Examen Init CL
+217;3;Analyse
+217;4;Post Soins
+217;5;Sortie UHCD
+218;1;Triage IOA
+218;2;Examen Init CC
+218;3;Post Soins
+218;4;Sortie Domicile
+219;1;Triage IOA
+219;2;Examen Init CL
+219;3;Examen Radio
+219;4;Analyse
+219;5;Post Soins
+219;6;Sortie UHCD
+220;1;Triage IOA
+220;2;Examen Init CL
+220;3;Analyse
+220;4;Post Soins
+220;5;Sortie Transfert
+221;1;Triage IOA
+221;2;Examen Init CC
+221;3;Analyse
+221;4;Post Soins
+221;5;Sortie Domicile
+222;1;Triage IOA
+222;2;Examen Init CC
+222;3;Sortie Domicile
+223;1;Triage IOA
+223;2;Examen Init CC
+223;3;Examen Radio
+223;4;Post Soins
+223;5;Sortie UHCD
+224;1;Triage IOA
+224;2;Examen Init CL
+224;3;Post Soins
+224;4;Sortie UHCD
+225;1;Triage IOA
+225;2;Examen Init CC
+225;3;Analyse
+225;4;Post Soins
+225;5;Sortie Domicile
+226;1;Triage IOA
+226;2;Examen Init CL
+226;3;Examen Radio
+226;4;Analyse
+226;5;Post Soins
+226;6;Sortie UHCD
+227;1;Triage IOA
+227;2;Examen Init CC
+227;3;Sortie Domicile
+228;1;Triage IOA
+228;2;Examen Init CC
+228;3;Sortie Domicile
+229;1;Triage IOA
+229;2;Examen Init CC
+229;3;Examen Radio
+229;4;Post Soins
+229;5;Sortie Domicile
+230;1;Triage IOA
+230;2;Examen Init CL
+230;3;Analyse
+230;4;Post Soins
+230;5;Sortie UHCD
+231;1;Triage IOA
+231;2;Examen Init CC
+231;3;Sortie Domicile
+232;1;Triage IOA
+232;2;Examen Init CL
+232;3;Analyse
+232;4;Post Soins
+232;5;Sortie UHCD
+233;1;Triage IOA
+233;2;Examen Init CC
+233;3;Sortie Domicile
+234;1;Triage IOA
+234;2;Examen Init CC
+234;3;Sortie Domicile
+235;1;Triage IOA
+235;2;Examen Init CC
+235;3;Analyse
+235;4;Post Soins
+235;5;Sortie Domicile
+236;1;Triage IOA
+236;2;Examen Init CC
+236;3;Sortie Domicile
+237;1;Triage IOA
+237;2;Examen Init CC
+237;3;Sortie Domicile
+238;1;Triage IOA
+238;2;Examen Init CC
+238;3;Sortie Domicile
+239;1;Triage IOA
+239;2;Examen Init CL
+239;3;Examen Radio
+239;4;Analyse
+239;5;Post Soins
+239;6;Sortie UHCD
+240;1;Triage IOA
+240;2;Examen Init CL
+240;3;Examen Radio
+240;4;Analyse
+240;5;Post Soins
+240;6;Sortie UHCD
+241;1;Triage IOA
+241;2;Examen Init CC
+241;3;Post Soins
+241;4;Sortie Domicile
+242;1;Triage IOA
+242;2;Examen Init CL
+242;3;Analyse
+242;4;Post Soins
+242;5;Sortie UHCD
+243;1;Triage IOA
+243;2;Examen Init CC
+243;3;Sortie Domicile
+244;1;Triage IOA
+244;2;Examen Init CC
+244;3;Sortie Domicile
+245;1;Triage IOA
+245;2;Examen Init CC
+245;3;Analyse
+245;4;Post Soins
+245;5;Sortie Domicile
+246;1;Triage IOA
+246;2;Examen Init CC
+246;3;Sortie Domicile
+247;1;Triage IOA
+247;2;Examen Init CC
+247;3;Sortie Domicile
+248;1;Triage IOA
+248;2;Examen Init CC
+248;3;Analyse
+248;4;Post Soins
+248;5;Sortie UHCD
+249;1;Triage IOA
+249;2;Examen Init CL
+249;3;Examen Radio
+249;4;Analyse
+249;5;Post Soins
+249;6;Sortie UHCD
+250;1;Triage IOA
+250;2;Examen Init CL
+250;3;Analyse
+250;4;Post Soins
+250;5;Sortie Domicile
+251;1;Triage IOA
+251;2;Examen Init CC
+251;3;Sortie Domicile
+252;1;Triage IOA
+252;2;Examen Init CC
+252;3;Sortie Domicile
+253;1;Triage IOA
+253;2;Examen Init CC
+253;3;Analyse
+253;4;Post Soins
+253;5;Sortie Domicile
+254;1;Triage IOA
+254;2;Examen Init CC
+254;3;Sortie Domicile
+255;1;Triage IOA
+255;2;Examen Init CC
+255;3;Sortie Domicile
+256;1;Triage IOA
+256;2;Examen Init CC
+256;3;Sortie Domicile
+257;1;Triage IOA
+257;2;Examen Init CC
+257;3;Examen Radio
+257;4;Analyse
+257;5;Post Soins
+257;6;Sortie UHCD
+258;1;Triage IOA
+258;2;Examen Init CC
+258;3;Post Soins
+258;4;Sortie Domicile
+259;1;Triage IOA
+259;2;Examen Init CC
+259;3;Examen Radio
+259;4;Analyse
+259;5;Post Soins
+259;6;Sortie Domicile
+260;1;Triage IOA
+260;2;Examen Init CC
+260;3;Sortie Domicile
+261;1;Triage IOA
+261;2;Examen Init CC
+261;3;Post Soins
+261;4;Sortie Domicile
+262;1;Triage IOA
+262;2;Examen Init CC
+262;3;Sortie Domicile
+263;1;Triage IOA
+263;2;Examen Init CC
+263;3;Sortie Domicile
+264;1;Triage IOA
+264;2;Examen Init CC
+264;3;Analyse
+264;4;Post Soins
+264;5;Sortie Domicile
+265;1;Triage IOA
+265;2;Examen Init CL
+265;3;Analyse
+265;4;Post Soins
+265;5;Sortie UHCD
+266;1;Triage IOA
+266;2;Examen Init CC
+266;3;Sortie Domicile
+267;1;Triage IOA
+267;2;Examen Init CC
+267;3;Sortie Domicile
+268;1;Triage IOA
+268;2;Examen Init CC
+268;3;Post Soins
+268;4;Sortie Domicile
+269;1;Triage IOA
+269;2;Examen Init CL
+269;3;Examen Radio
+269;4;Analyse
+269;5;Post Soins
+269;6;Sortie Domicile
+270;1;Triage IOA
+270;2;Examen Init CC
+270;3;Examen Radio
+270;4;Analyse
+270;5;Post Soins
+270;6;Sortie UHCD
+271;1;Triage IOA
+271;2;Examen Init CL
+271;3;Examen Radio
+271;4;Analyse
+271;5;Post Soins
+271;6;Sortie Transfert
+272;1;Triage IOA
+272;2;Examen Init CL
+272;3;Examen Radio
+272;4;Analyse
+272;5;Post Soins
+272;6;Sortie UHCD
+273;1;Triage IOA
+273;2;Examen Init CL
+273;3;Analyse
+273;4;Post Soins
+273;5;Sortie UHCD
+274;1;Triage IOA
+274;2;Examen Init CC
+274;3;Sortie Domicile
+275;1;Triage IOA
+275;2;Examen Init CC
+275;3;Sortie Domicile
+276;1;Triage IOA
+276;2;Examen Init CL
+276;3;Analyse
+276;4;Post Soins
+276;5;Sortie UHCD
+277;1;Triage IOA
+277;2;Examen Init CC
+277;3;Sortie Domicile
+278;1;Triage IOA
+278;2;Examen Init CL
+278;3;Examen Radio
+278;4;Analyse
+278;5;Post Soins
+278;6;Sortie UHCD
+279;1;Triage IOA
+279;2;Examen Init CC
+279;3;Post Soins
+279;4;Sortie Domicile
+280;1;Triage IOA
+280;2;Examen Init CL
+280;3;Examen Radio
+280;4;Analyse
+280;5;Post Soins
+280;6;Sortie Domicile
+281;1;Triage IOA
+281;2;Examen Init CL
+281;3;Examen Radio
+281;4;Analyse
+281;5;Post Soins
+281;6;Sortie UHCD
+282;1;Triage IOA
+282;2;Examen Init CL
+282;3;Examen Radio
+282;4;Analyse
+282;5;Post Soins
+282;6;Sortie UHCD
+283;1;Triage IOA
+283;2;Examen Init CL
+283;3;Examen Radio
+283;4;Analyse
+283;5;Post Soins
+283;6;Sortie Transfert
+284;1;Triage IOA
+284;2;Examen Init CC
+284;3;Post Soins
+284;4;Sortie Domicile
+285;1;Triage IOA
+285;2;Examen Init CC
+285;3;Analyse
+285;4;Post Soins
+285;5;Sortie Domicile
+286;1;Triage IOA
+286;2;Examen Init CL
+286;3;Analyse
+286;4;Post Soins
+286;5;Sortie UHCD
+287;1;Triage IOA
+287;2;Examen Init CC
+287;3;Sortie Domicile
+288;1;Triage IOA
+288;2;Examen Init CC
+288;3;Examen Radio
+288;4;Post Soins
+288;5;Sortie Domicile
+289;1;Triage IOA
+289;2;Examen Init CC
+289;3;Post Soins
+289;4;Sortie Domicile
+290;1;Triage IOA
+290;2;Examen Init CC
+290;3;Examen Radio
+290;4;Analyse
+290;5;Post Soins
+290;6;Sortie Domicile
+291;1;Triage IOA
+291;2;Examen Init CC
+291;3;Examen Radio
+291;4;Post Soins
+291;5;Sortie Domicile
+292;1;Triage IOA
+292;2;Examen Init CC
+292;3;Sortie Domicile
+293;1;Triage IOA
+293;2;Examen Init CL
+293;3;Examen Radio
+293;4;Analyse
+293;5;Post Soins
+293;6;Sortie UHCD
+294;1;Triage IOA
+294;2;Examen Init CL
+294;3;Examen Radio
+294;4;Analyse
+294;5;Post Soins
+294;6;Sortie Transfert
+295;1;Triage IOA
+295;2;Examen Init CC
+295;3;Sortie Domicile
+296;1;Triage IOA
+296;2;Examen Init CC
+296;3;Sortie Domicile
+297;1;Triage IOA
+297;2;Examen Init CL
+297;3;Examen Radio
+297;4;Analyse
+297;5;Post Soins
+297;6;Sortie UHCD
+298;1;Triage IOA
+298;2;Examen Init CC
+298;3;Sortie Domicile
+299;1;Triage IOA
+299;2;Examen Init CL
+299;3;Analyse
+299;4;Post Soins
+299;5;Sortie Domicile
+300;1;Triage IOA
+300;2;Examen Init CL
+300;3;Examen Radio
+300;4;Analyse
+300;5;Post Soins
+300;6;Sortie UHCD
+301;1;Triage IOA
+301;2;Examen Init CL
+301;3;Analyse
+301;4;Post Soins
+301;5;Sortie UHCD
+302;1;Triage IOA
+302;2;Examen Init CC
+302;3;Sortie Domicile
+303;1;Triage IOA
+303;2;Examen Init CC
+303;3;Sortie Domicile
+304;1;Triage IOA
+304;2;Examen Init CC
+304;3;Examen Radio
+304;4;Analyse
+304;5;Post Soins
+304;6;Sortie Domicile
+305;1;Triage IOA
+305;2;Examen Init CC
+305;3;Analyse
+305;4;Post Soins
+305;5;Sortie Domicile
+306;1;Triage IOA
+306;2;Examen Init CL
+306;3;Examen Radio
+306;4;Analyse
+306;5;Post Soins
+306;6;Sortie Domicile
+307;1;Triage IOA
+307;2;Examen Init CL
+307;3;Analyse
+307;4;Post Soins
+307;5;Sortie UHCD
+308;1;Triage IOA
+308;2;Examen Init CC
+308;3;Sortie Domicile
+309;1;Triage IOA
+309;2;Examen Init CL
+309;3;Analyse
+309;4;Post Soins
+309;5;Sortie Domicile
+310;1;Triage IOA
+310;2;Examen Init CC
+310;3;Sortie Domicile
+311;1;Triage IOA
+311;2;Examen Init CL
+311;3;Examen Radio
+311;4;Analyse
+311;5;Post Soins
+311;6;Sortie UHCD
+312;1;Triage IOA
+312;2;Examen Init CL
+312;3;Examen Radio
+312;4;Post Soins
+312;5;Sortie UHCD
+313;1;Triage IOA
+313;2;Examen Init CC
+313;3;Examen Radio
+313;4;Analyse
+313;5;Post Soins
+313;6;Sortie UHCD
+314;1;Triage IOA
+314;2;Examen Init CC
+314;3;Sortie Domicile
+315;1;Triage IOA
+315;2;Examen Init CL
+315;3;Examen Radio
+315;4;Analyse
+315;5;Post Soins
+315;6;Sortie UHCD
+316;1;Triage IOA
+316;2;Examen Init CL
+316;3;Examen Radio
+316;4;Analyse
+316;5;Post Soins
+316;6;Sortie UHCD
+317;1;Triage IOA
+317;2;Examen Init CC
+317;3;Analyse
+317;4;Post Soins
+317;5;Sortie UHCD
+318;1;Triage IOA
+318;2;Examen Init CC
+318;3;Examen Radio
+318;4;Analyse
+318;5;Post Soins
+318;6;Sortie Domicile
+319;1;Triage IOA
+319;2;Examen Init CC
+319;3;Sortie Domicile
+320;1;Triage IOA
+320;2;Examen Init CC
+320;3;Analyse
+320;4;Post Soins
+320;5;Sortie Domicile
+321;1;Triage IOA
+321;2;Examen Init CC
+321;3;Sortie Domicile
+322;1;Triage IOA
+322;2;Examen Init CC
+322;3;Sortie Domicile
+323;1;Triage IOA
+323;2;Examen Init CC
+323;3;Sortie Domicile
+324;1;Triage IOA
+324;2;Examen Init CC
+324;3;Post Soins
+324;4;Sortie Domicile
+325;1;Triage IOA
+325;2;Examen Init CL
+325;3;Examen Radio
+325;4;Analyse
+325;5;Post Soins
+325;6;Sortie UHCD
+326;1;Triage IOA
+326;2;Examen Init CL
+326;3;Examen Radio
+326;4;Analyse
+326;5;Post Soins
+326;6;Sortie UHCD
+327;1;Triage IOA
+327;2;Examen Init CC
+327;3;Examen Radio
+327;4;Analyse
+327;5;Post Soins
+327;6;Sortie Domicile
+328;1;Triage IOA
+328;2;Examen Init CC
+328;3;Examen Radio
+328;4;Analyse
+328;5;Post Soins
+328;6;Sortie UHCD
+329;1;Triage IOA
+329;2;Examen Init CC
+329;3;Examen Radio
+329;4;Analyse
+329;5;Post Soins
+329;6;Sortie Domicile
+330;1;Triage IOA
+330;2;Examen Init CL
+330;3;Examen Radio
+330;4;Post Soins
+330;5;Sortie UHCD
+331;1;Triage IOA
+331;2;Examen Init CC
+331;3;Sortie Domicile
+332;1;Triage IOA
+332;2;Examen Init CL
+332;3;Examen Radio
+332;4;Post Soins
+332;5;Sortie UHCD
+333;1;Triage IOA
+333;2;Examen Init CC
+333;3;Sortie Domicile
+334;1;Triage IOA
+334;2;Examen Init CC
+334;3;Sortie Domicile
+335;1;Triage IOA
+335;2;Examen Init CC
+335;3;Examen Radio
+335;4;Post Soins
+335;5;Sortie Domicile
+336;1;Triage IOA
+336;2;Examen Init CC
+336;3;Sortie Domicile
+337;1;Triage IOA
+337;2;Examen Init CC
+337;3;Examen Radio
+337;4;Post Soins
+337;5;Sortie Domicile
+338;1;Triage IOA
+338;2;Examen Init CC
+338;3;Examen Radio
+338;4;Analyse
+338;5;Post Soins
+338;6;Sortie Domicile
+339;1;Triage IOA
+339;2;Examen Init CC
+339;3;Examen Radio
+339;4;Post Soins
+339;5;Sortie UHCD
+340;1;Triage IOA
+340;2;Examen Init CC
+340;3;Post Soins
+340;4;Sortie Domicile
+341;1;Triage IOA
+341;2;Examen Init CL
+341;3;Examen Radio
+341;4;Analyse
+341;5;Post Soins
+341;6;Sortie UHCD
+342;1;Triage IOA
+342;2;Examen Init CL
+342;3;Analyse
+342;4;Post Soins
+342;5;Sortie UHCD
+343;1;Triage IOA
+343;2;Examen Init CC
+343;3;Sortie Domicile
+344;1;Triage IOA
+344;2;Examen Init CC
+344;3;Analyse
+344;4;Post Soins
+344;5;Sortie Domicile
+345;1;Triage IOA
+345;2;Examen Init CC
+345;3;Post Soins
+345;4;Sortie Domicile
+346;1;Triage IOA
+346;2;Examen Init CC
+346;3;Sortie Domicile
+347;1;Triage IOA
+347;2;Examen Init CC
+347;3;Sortie Domicile
+348;1;Triage IOA
+348;2;Examen Init CC
+348;3;Sortie Domicile
+349;1;Triage IOA
+349;2;Examen Init CC
+349;3;Sortie Domicile
+350;1;Triage IOA
+350;2;Examen Init CC
+350;3;Examen Radio
+350;4;Analyse
+350;5;Post Soins
+350;6;Sortie Domicile
+351;1;Triage IOA
+351;2;Examen Init CL
+351;3;Examen Radio
+351;4;Analyse
+351;5;Post Soins
+351;6;Sortie Domicile
+352;1;Triage IOA
+352;2;Examen Init CC
+352;3;Sortie Domicile
+353;1;Triage IOA
+353;2;Examen Init CC
+353;3;Sortie Domicile
+354;1;Triage IOA
+354;2;Examen Init CC
+354;3;Sortie Domicile
+355;1;Triage IOA
+355;2;Examen Init CC
+355;3;Examen Radio
+355;4;Post Soins
+355;5;Sortie Domicile
+356;1;Triage IOA
+356;2;Examen Init CC
+356;3;Examen Radio
+356;4;Post Soins
+356;5;Sortie Domicile
+357;1;Triage IOA
+357;2;Examen Init CC
+357;3;Examen Radio
+357;4;Post Soins
+357;5;Sortie Domicile
+358;1;Triage IOA
+358;2;Examen Init CC
+358;3;Sortie Domicile
+359;1;Triage IOA
+359;2;Examen Init CC
+359;3;Sortie Domicile
+360;1;Triage IOA
+360;2;Examen Init CC
+360;3;Examen Radio
+360;4;Post Soins
+360;5;Sortie Domicile
+361;1;Triage IOA
+361;2;Examen Init CC
+361;3;Sortie Domicile
+362;1;Triage IOA
+362;2;Examen Init CC
+362;3;Examen Radio
+362;4;Post Soins
+362;5;Sortie Domicile
+363;1;Triage IOA
+363;2;Examen Init CL
+363;3;Examen Radio
+363;4;Analyse
+363;5;Post Soins
+363;6;Sortie Domicile
+364;1;Triage IOA
+364;2;Examen Init CC
+364;3;Sortie Domicile
+365;1;Triage IOA
+365;2;Examen Init CC
+365;3;Examen Radio
+365;4;Analyse
+365;5;Post Soins
+365;6;Sortie Domicile
+366;1;Triage IOA
+366;2;Examen Init CC
+366;3;Analyse
+366;4;Post Soins
+366;5;Sortie Domicile
+367;1;Triage IOA
+367;2;Examen Init CC
+367;3;Analyse
+367;4;Post Soins
+367;5;Sortie Domicile
+368;1;Triage IOA
+368;2;Examen Init CL
+368;3;Analyse
+368;4;Post Soins
+368;5;Sortie UHCD
+369;1;Triage IOA
+369;2;Examen Init CL
+369;3;Examen Radio
+369;4;Analyse
+369;5;Post Soins
+369;6;Sortie UHCD
+370;1;Triage IOA
+370;2;Examen Init CC
+370;3;Sortie Domicile
+371;1;Triage IOA
+371;2;Examen Init CL
+371;3;Analyse
+371;4;Post Soins
+371;5;Sortie UHCD
+372;1;Triage IOA
+372;2;Examen Init CC
+372;3;Sortie Domicile
+373;1;Triage IOA
+373;2;Examen Init CL
+373;3;Examen Radio
+373;4;Analyse
+373;5;Post Soins
+373;6;Sortie Transfert
+374;1;Triage IOA
+374;2;Examen Init CC
+374;3;Sortie Domicile
+375;1;Triage IOA
+375;2;Examen Init CL
+375;3;Examen Radio
+375;4;Analyse
+375;5;Post Soins
+375;6;Sortie UHCD
+376;1;Triage IOA
+376;2;Examen Init CL
+376;3;Examen Radio
+376;4;Analyse
+376;5;Post Soins
+376;6;Sortie UHCD
+377;1;Triage IOA
+377;2;Examen Init CC
+377;3;Examen Radio
+377;4;Post Soins
+377;5;Sortie Domicile
+378;1;Triage IOA
+378;2;Examen Init CC
+378;3;Post Soins
+378;4;Sortie Domicile
+379;1;Triage IOA
+379;2;Examen Init CL
+379;3;Examen Radio
+379;4;Analyse
+379;5;Post Soins
+379;6;Sortie Domicile
+380;1;Triage IOA
+380;2;Examen Init CL
+380;3;Analyse
+380;4;Post Soins
+380;5;Sortie UHCD
+381;1;Triage IOA
+381;2;Examen Init CC
+381;3;Post Soins
+381;4;Sortie Domicile
+382;1;Triage IOA
+382;2;Examen Init CL
+382;3;Examen Radio
+382;4;Analyse
+382;5;Post Soins
+382;6;Sortie UHCD
+383;1;Triage IOA
+383;2;Examen Init CL
+383;3;Analyse
+383;4;Post Soins
+383;5;Sortie Transfert
+384;1;Triage IOA
+384;2;Examen Init CC
+384;3;Sortie Domicile
+385;1;Triage IOA
+385;2;Examen Init CC
+385;3;Sortie Domicile
+386;1;Triage IOA
+386;2;Examen Init CL
+386;3;Analyse
+386;4;Post Soins
+386;5;Sortie UHCD
+387;1;Triage IOA
+387;2;Examen Init CL
+387;3;Examen Radio
+387;4;Analyse
+387;5;Post Soins
+387;6;Sortie UHCD
+388;1;Triage IOA
+388;2;Examen Init CC
+388;3;Sortie Domicile
+389;1;Triage IOA
+389;2;Examen Init CL
+389;3;Analyse
+389;4;Post Soins
+389;5;Sortie UHCD
+390;1;Triage IOA
+390;2;Examen Init CL
+390;3;Examen Radio
+390;4;Analyse
+390;5;Post Soins
+390;6;Sortie UHCD
+391;1;Triage IOA
+391;2;Examen Init CC
+391;3;Post Soins
+391;4;Sortie Domicile
+392;1;Triage IOA
+392;2;Examen Init CC
+392;3;Examen Radio
+392;4;Analyse
+392;5;Post Soins
+392;6;Sortie UHCD
+393;1;Triage IOA
+393;2;Examen Init CL
+393;3;Examen Radio
+393;4;Analyse
+393;5;Post Soins
+393;6;Sortie UHCD
+394;1;Triage IOA
+394;2;Examen Init CC
+394;3;Sortie Domicile
+395;1;Triage IOA
+395;2;Examen Init CC
+395;3;Sortie Domicile
+396;1;Triage IOA
+396;2;Examen Init CC
+396;3;Examen Radio
+396;4;Post Soins
+396;5;Sortie Domicile
+397;1;Triage IOA
+397;2;Examen Init CL
+397;3;Examen Radio
+397;4;Analyse
+397;5;Post Soins
+397;6;Sortie UHCD
+398;1;Triage IOA
+398;2;Examen Init CC
+398;3;Sortie Domicile
+399;1;Triage IOA
+399;2;Examen Init CC
+399;3;Post Soins
+399;4;Sortie Domicile
+400;1;Triage IOA
+400;2;Examen Init CC
+400;3;Sortie Domicile
+401;1;Triage IOA
+401;2;Examen Init CL
+401;3;Analyse
+401;4;Post Soins
+401;5;Sortie UHCD
+402;1;Triage IOA
+402;2;Examen Init CC
+402;3;Sortie Domicile
+403;1;Triage IOA
+403;2;Examen Init CC
+403;3;Sortie Domicile
+404;1;Triage IOA
+404;2;Examen Init CC
+404;3;Sortie Domicile
+405;1;Triage IOA
+405;2;Examen Init CC
+405;3;Examen Radio
+405;4;Post Soins
+405;5;Sortie Domicile
+406;1;Triage IOA
+406;2;Examen Init CC
+406;3;Examen Radio
+406;4;Analyse
+406;5;Post Soins
+406;6;Sortie Domicile
+407;1;Triage IOA
+407;2;Examen Init CC
+407;3;Post Soins
+407;4;Sortie Domicile
+408;1;Triage IOA
+408;2;Examen Init CL
+408;3;Analyse
+408;4;Post Soins
+408;5;Sortie Transfert
+409;1;Triage IOA
+409;2;Examen Init CL
+409;3;Examen Radio
+409;4;Analyse
+409;5;Post Soins
+409;6;Sortie Transfert
+410;1;Triage IOA
+410;2;Examen Init CL
+410;3;Examen Radio
+410;4;Analyse
+410;5;Post Soins
+410;6;Sortie UHCD
+411;1;Triage IOA
+411;2;Examen Init CL
+411;3;Examen Radio
+411;4;Analyse
+411;5;Post Soins
+411;6;Sortie Domicile
+412;1;Triage IOA
+412;2;Examen Init CC
+412;3;Examen Radio
+412;4;Post Soins
+412;5;Sortie Domicile
+413;1;Triage IOA
+413;2;Examen Init CL
+413;3;Examen Radio
+413;4;Analyse
+413;5;Post Soins
+413;6;Sortie UHCD
+414;1;Triage IOA
+414;2;Examen Init CC
+414;3;Examen Radio
+414;4;Post Soins
+414;5;Sortie Domicile
+415;1;Triage IOA
+415;2;Examen Init CL
+415;3;Examen Radio
+415;4;Analyse
+415;5;Post Soins
+415;6;Sortie UHCD
+416;1;Triage IOA
+416;2;Examen Init CC
+416;3;Sortie Domicile
+417;1;Triage IOA
+417;2;Examen Init CC
+417;3;Examen Radio
+417;4;Analyse
+417;5;Post Soins
+417;6;Sortie UHCD
+418;1;Triage IOA
+418;2;Examen Init CL
+418;3;Analyse
+418;4;Post Soins
+418;5;Sortie UHCD
+419;1;Triage IOA
+419;2;Examen Init CC
+419;3;Sortie Domicile
+420;1;Triage IOA
+420;2;Examen Init CC
+420;3;Examen Radio
+420;4;Analyse
+420;5;Post Soins
+420;6;Sortie Domicile
+421;1;Triage IOA
+421;2;Examen Init CL
+421;3;Examen Radio
+421;4;Analyse
+421;5;Post Soins
+421;6;Sortie UHCD
+422;1;Triage IOA
+422;2;Examen Init CC
+422;3;Sortie Domicile
+423;1;Triage IOA
+423;2;Examen Init CL
+423;3;Examen Radio
+423;4;Post Soins
+423;5;Sortie UHCD
+424;1;Triage IOA
+424;2;Examen Init CC
+424;3;Sortie Domicile
+425;1;Triage IOA
+425;2;Examen Init CC
+425;3;Analyse
+425;4;Post Soins
+425;5;Sortie Domicile
+426;1;Triage IOA
+426;2;Examen Init CC
+426;3;Examen Radio
+426;4;Analyse
+426;5;Post Soins
+426;6;Sortie Domicile
+427;1;Triage IOA
+427;2;Examen Init CC
+427;3;Sortie Domicile
+428;1;Triage IOA
+428;2;Examen Init CL
+428;3;Analyse
+428;4;Post Soins
+428;5;Sortie UHCD
+429;1;Triage IOA
+429;2;Examen Init CL
+429;3;Examen Radio
+429;4;Analyse
+429;5;Post Soins
+429;6;Sortie UHCD
+430;1;Triage IOA
+430;2;Examen Init CC
+430;3;Sortie Domicile
+431;1;Triage IOA
+431;2;Examen Init CL
+431;3;Examen Radio
+431;4;Post Soins
+431;5;Sortie UHCD
+432;1;Triage IOA
+432;2;Examen Init CC
+432;3;Sortie Domicile
+433;1;Triage IOA
+433;2;Examen Init CC
+433;3;Examen Radio
+433;4;Analyse
+433;5;Post Soins
+433;6;Sortie Domicile
+434;1;Triage IOA
+434;2;Examen Init CL
+434;3;Examen Radio
+434;4;Analyse
+434;5;Post Soins
+434;6;Sortie UHCD
+435;1;Triage IOA
+435;2;Examen Init CL
+435;3;Analyse
+435;4;Post Soins
+435;5;Sortie Domicile
+436;1;Triage IOA
+436;2;Examen Init CC
+436;3;Sortie Domicile
+437;1;Triage IOA
+437;2;Examen Init CC
+437;3;Sortie Domicile
+438;1;Triage IOA
+438;2;Examen Init CL
+438;3;Examen Radio
+438;4;Post Soins
+438;5;Sortie UHCD
+439;1;Triage IOA
+439;2;Examen Init CC
+439;3;Analyse
+439;4;Post Soins
+439;5;Sortie UHCD
+440;1;Triage IOA
+440;2;Examen Init CC
+440;3;Analyse
+440;4;Post Soins
+440;5;Sortie Domicile
+441;1;Triage IOA
+441;2;Examen Init CL
+441;3;Examen Radio
+441;4;Analyse
+441;5;Post Soins
+441;6;Sortie UHCD
+442;1;Triage IOA
+442;2;Examen Init CC
+442;3;Analyse
+442;4;Post Soins
+442;5;Sortie Domicile
+443;1;Triage IOA
+443;2;Examen Init CL
+443;3;Examen Radio
+443;4;Analyse
+443;5;Post Soins
+443;6;Sortie Domicile
+444;1;Triage IOA
+444;2;Examen Init CL
+444;3;Examen Radio
+444;4;Analyse
+444;5;Post Soins
+444;6;Sortie Domicile
+445;1;Triage IOA
+445;2;Examen Init CL
+445;3;Post Soins
+445;4;Sortie Domicile
+446;1;Triage IOA
+446;2;Examen Init CL
+446;3;Examen Radio
+446;4;Post Soins
+446;5;Sortie UHCD
+447;1;Triage IOA
+447;2;Examen Init CL
+447;3;Examen Radio
+447;4;Analyse
+447;5;Post Soins
+447;6;Sortie UHCD
+448;1;Triage IOA
+448;2;Examen Init CL
+448;3;Examen Radio
+448;4;Analyse
+448;5;Post Soins
+448;6;Sortie UHCD
+449;1;Triage IOA
+449;2;Examen Init CC
+449;3;Examen Radio
+449;4;Post Soins
+449;5;Sortie Domicile
+450;1;Triage IOA
+450;2;Examen Init CL
+450;3;Examen Radio
+450;4;Analyse
+450;5;Post Soins
+450;6;Sortie Domicile
+451;1;Triage IOA
+451;2;Examen Init CL
+451;3;Examen Radio
+451;4;Analyse
+451;5;Post Soins
+451;6;Sortie UHCD
+452;1;Triage IOA
+452;2;Examen Init CC
+452;3;Post Soins
+452;4;Sortie Domicile
+453;1;Triage IOA
+453;2;Examen Init CL
+453;3;Examen Radio
+453;4;Analyse
+453;5;Post Soins
+453;6;Sortie Transfert
+454;1;Triage IOA
+454;2;Examen Init CC
+454;3;Sortie Domicile
+455;1;Triage IOA
+455;2;Examen Init CL
+455;3;Examen Radio
+455;4;Analyse
+455;5;Post Soins
+455;6;Sortie UHCD
+456;1;Triage IOA
+456;2;Examen Init CC
+456;3;Sortie Domicile
+457;1;Triage IOA
+457;2;Examen Init CL
+457;3;Examen Radio
+457;4;Analyse
+457;5;Post Soins
+457;6;Sortie Transfert
+458;1;Triage IOA
+458;2;Examen Init CL
+458;3;Examen Radio
+458;4;Analyse
+458;5;Post Soins
+458;6;Sortie UHCD
+459;1;Triage IOA
+459;2;Examen Init CC
+459;3;Examen Radio
+459;4;Post Soins
+459;5;Sortie UHCD
+460;1;Triage IOA
+460;2;Examen Init CC
+460;3;Sortie Domicile
+461;1;Triage IOA
+461;2;Examen Init CL
+461;3;Examen Radio
+461;4;Analyse
+461;5;Post Soins
+461;6;Sortie Transfert
+462;1;Triage IOA
+462;2;Examen Init CL
+462;3;Analyse
+462;4;Post Soins
+462;5;Sortie Domicile
+463;1;Triage IOA
+463;2;Examen Init CL
+463;3;Examen Radio
+463;4;Analyse
+463;5;Post Soins
+463;6;Sortie UHCD
+464;1;Triage IOA
+464;2;Examen Init CC
+464;3;Sortie Domicile
+465;1;Triage IOA
+465;2;Examen Init CC
+465;3;Sortie Domicile
+466;1;Triage IOA
+466;2;Examen Init CC
+466;3;Sortie Domicile
+467;1;Triage IOA
+467;2;Examen Init CC
+467;3;Analyse
+467;4;Post Soins
+467;5;Sortie Domicile
+468;1;Triage IOA
+468;2;Examen Init CC
+468;3;Sortie Domicile
+469;1;Triage IOA
+469;2;Examen Init CC
+469;3;Sortie Domicile
+470;1;Triage IOA
+470;2;Examen Init CL
+470;3;Examen Radio
+470;4;Post Soins
+470;5;Sortie Transfert
+471;1;Triage IOA
+471;2;Examen Init CC
+471;3;Sortie Domicile
+472;1;Triage IOA
+472;2;Examen Init CC
+472;3;Post Soins
+472;4;Sortie UHCD
+473;1;Triage IOA
+473;2;Examen Init CC
+473;3;Post Soins
+473;4;Sortie UHCD
+474;1;Triage IOA
+474;2;Examen Init CL
+474;3;Examen Radio
+474;4;Analyse
+474;5;Post Soins
+474;6;Sortie UHCD
+475;1;Triage IOA
+475;2;Examen Init CL
+475;3;Examen Radio
+475;4;Analyse
+475;5;Post Soins
+475;6;Sortie Domicile
+476;1;Triage IOA
+476;2;Examen Init CC
+476;3;Examen Radio
+476;4;Analyse
+476;5;Post Soins
+476;6;Sortie Domicile
+477;1;Triage IOA
+477;2;Examen Init CC
+477;3;Examen Radio
+477;4;Analyse
+477;5;Post Soins
+477;6;Sortie UHCD
+478;1;Triage IOA
+478;2;Examen Init CC
+478;3;Sortie Domicile
+479;1;Triage IOA
+479;2;Examen Init CC
+479;3;Analyse
+479;4;Post Soins
+479;5;Sortie Domicile
+480;1;Triage IOA
+480;2;Examen Init CC
+480;3;Sortie Domicile
+481;1;Triage IOA
+481;2;Examen Init CC
+481;3;Examen Radio
+481;4;Post Soins
+481;5;Sortie Domicile
+482;1;Triage IOA
+482;2;Examen Init CC
+482;3;Examen Radio
+482;4;Post Soins
+482;5;Sortie Domicile
+483;1;Triage IOA
+483;2;Examen Init CC
+483;3;Examen Radio
+483;4;Post Soins
+483;5;Sortie UHCD
+484;1;Triage IOA
+484;2;Examen Init CC
+484;3;Sortie Domicile
+485;1;Triage IOA
+485;2;Examen Init CC
+485;3;Post Soins
+485;4;Sortie Domicile
+486;1;Triage IOA
+486;2;Examen Init CC
+486;3;Sortie Domicile
+487;1;Triage IOA
+487;2;Examen Init CL
+487;3;Examen Radio
+487;4;Analyse
+487;5;Post Soins
+487;6;Sortie Transfert
+488;1;Triage IOA
+488;2;Examen Init CC
+488;3;Examen Radio
+488;4;Analyse
+488;5;Post Soins
+488;6;Sortie Domicile
+489;1;Triage IOA
+489;2;Examen Init CL
+489;3;Examen Radio
+489;4;Analyse
+489;5;Post Soins
+489;6;Sortie UHCD
+490;1;Triage IOA
+490;2;Examen Init CC
+490;3;Sortie Domicile
+491;1;Triage IOA
+491;2;Examen Init CL
+491;3;Examen Radio
+491;4;Analyse
+491;5;Post Soins
+491;6;Sortie UHCD
+492;1;Triage IOA
+492;2;Examen Init CC
+492;3;Examen Radio
+492;4;Post Soins
+492;5;Sortie Domicile
+493;1;Triage IOA
+493;2;Examen Init CC
+493;3;Examen Radio
+493;4;Analyse
+493;5;Post Soins
+493;6;Sortie Domicile
+494;1;Triage IOA
+494;2;Examen Init CC
+494;3;Post Soins
+494;4;Sortie Domicile
+495;1;Triage IOA
+495;2;Examen Init CC
+495;3;Analyse
+495;4;Post Soins
+495;5;Sortie Domicile
+496;1;Triage IOA
+496;2;Examen Init CC
+496;3;Examen Radio
+496;4;Post Soins
+496;5;Sortie UHCD
+497;1;Triage IOA
+497;2;Examen Init CL
+497;3;Examen Radio
+497;4;Post Soins
+497;5;Sortie UHCD
+498;1;Triage IOA
+498;2;Examen Init CC
+498;3;Post Soins
+498;4;Sortie Domicile
+499;1;Triage IOA
+499;2;Examen Init CL
+499;3;Examen Radio
+499;4;Analyse
+499;5;Post Soins
+499;6;Sortie Domicile
+500;1;Triage IOA
+500;2;Examen Init CC
+500;3;Examen Radio
+500;4;Post Soins
+500;5;Sortie Domicile

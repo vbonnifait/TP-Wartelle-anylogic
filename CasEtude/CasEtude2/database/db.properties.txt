@@ -1,0 +1,5 @@
+#HSQL Database Engine 2.7.1
+#Tue Feb 03 09:56:07 CET 2026
+tx_timestamp=4725
+modified=yes
+version=2.7.1
