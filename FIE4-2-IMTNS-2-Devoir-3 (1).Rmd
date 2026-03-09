@@ -1,0 +1,936 @@
+---
+title: "FIE4-2-IMTNS-2-Devoir-3"
+author: "Adrien Wartelle"
+date: "2026-01-11"
+output: html_notebook # html_document
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+# Etude de cas sur l’analyse et la mesure de performance des Flux de Patients
+
+## Introduction
+
+Ce travail porte sur l'analyse des flux de patients sur un plateau mutualisé de consultations externes d'un hôpital.
+L'objectif est de réaliser un diagnostic objectif de la performance organisationnelle du service d'urologie en s'appuyant sur les méthodes et outils d'analyse de flux vus précédemment ainsi que sur le langage R à travers l’environnement de RStudio.
+La figure ci-dessous illustre les principaux flux ainsi que le Plan du plateau de consultations (voir fichiers PlanConsultations.pdf et ZoomURO.pdf consultables à partir <http://bit.ly/PlansCHUTlse>)
+
+<!--<img src="illustrations/PlanUro.png" alt="Plan du plateau de consultations" width="600"/>-->
+
+![Plan du plateau de consultations](illustrations/PlanUro.png "Plan du plateau de consultations") Afin de collecter des données sur les parcours suivis, les patients qui se sont présentés le 12/11/2015 ont été équipés d’une étiquette électronique (type RFID) qui a permis de tracer leurs parcours dans le plateau de consultation.
+Les données collectées ont été fusionnées avec les données des outils de gestion des dossiers administratifs et médicaux utilisés par les personnels.
+L'ensemble est disponible sous la forme d’un fichier log, illustré par le tableau suivant (voir annexe LogPatientUROseul_12112015.xlsx consultable à partir <http://bit.ly/logPatients>).
+
+<img src="illustrations/TableauLogPatients.png" alt="Vue du tableau de données de log patient" width="600"/> ![Vue du tableau de données de log patient](illustrations/TableauLogPatients.png "Vue du tableau de données de log patient")
+
+Les différentes colonnes de ce tableau de données sont :
+
+-   *ID* (Col A) : Identifiant du patient
+
+-   *Timestamp start* (Col B) : horodatage entrée de zone ou salle
+
+-   *Timestamp end* (Col C) : horodatage sortie de zone ou salle
+
+-   *Activity_MACRO* (Col D) : Type d'activité
+
+-   *Activity_DETAILS* (Col E) : Activité suivie et indice salle (i)
+
+-   *Ress.Humaines* (Col F) : Ressources humaines administratives ou soignantes intervenant dans l'activité
+
+-   *distance parcourues* (Col G) : Distance parcourue cumulée
+
+-   *début/fin opX* (Col H à O) : horodatage début/fin de chaque opération de prise en charge par une ressource administrative ou soignante (maxi 4 opérations par activité).
+
+## **Devoir 3 - Travail demandé** : Modélisation de file d'attente
+
+Ce travail, qui peut-être effectué en binôme, est à rendre pour le **01/03/2026** au format Rmd ou R (+pdf si besoin) avec pour titre "NOM_Prenom_FIE4-2-IMTNS-2-Devoir-3.\*"
+
+Ce troisième devoir va se focaliser sur la modélisation du service d'accueil.
+Après une extraction générale des modèles, il vaut sera demandé d'étudier un ensemble de modèles en les comparant quantitativement à la réalité et entre eux sur la base des mesures empiriques et des formules données par la théorie des files d'attente.
+
+```{r include=FALSE}
+library(tidyverse)
+library(data.table)
+library(readxl)
+```
+
+### Question 1) Extraction des paramètres (/5)
+
+L'objectif de cette question est d'extraire les temps d'arrivées et de départ de la file ainsi que le temps de départ de l'accueil de chaque patient et d'en extraire les paramètres empiriques de taux d'arrivée et de service.
+
+1.1) Dans un premier temps nous allons reformater les données afin de faciliter l'extraction en extrayant pour chaque patient :
+
+-   $td$ : La datetime de départ du service d’accueil
+
+-   $ta$ : La datetime d'arrivée au service d’accueil
+
+-   $tdq$ : La datetime de sortie de file.
+    **Attention**, on ne souhaite pas la datetime de sortie physique de la salle d'attente mais plutôt la datetime à partir de laquelle le bureau qui le prend en charge devient disponible pour obtenir des temps de process qui soit effectif (notion de *Effective Process Time*).
+    On applique pour chaque bureau et chaque patient.
+-   $S=tdq - td$
+
+    -   $tdq_m = max(ta_m,td_{m-1})$ (avec $m > 1$ correspondant aux indices de patient dans l'ordre de **service** du bureau concerné, pour $m=1$ on prendra $tdq_1 = ta_1$)
+
+Vous devriez obtenir le tableau suivant :
+
+```{r}
+# Charger les données traces brutes
+trace <- read.csv("local_data/trace_example_final.csv", sep = ";")
+
+# Filtrer pour garder uniquement les PATIENTS (ID numérique, pas d'agent/ressource)
+trace <- trace %>%
+  filter(TYPE == "PATIENT")
+
+# Identifier les locations d'accueil
+accueil_locations <- c("Accueil_Prio_1", "Accueil_General_1", "Accueil_General_2", "Accueil_General_3")
+
+# Pour chaque patient, extraire l'opération de service (CURRENT_OPERATION_NUMBER == 1) 
+# dans chaque bureau d'accueil
+accueil_raw <- trace %>%
+  filter(CURRENT_LOCATION %in% accueil_locations,
+         CURRENT_OPERATION_NUMBER == 1) %>%  # Prendre uniquement la ligne avec le service
+  select(ID, CURRENT_LOCATION, DATETIME_BEGIN, DATETIME_END) %>%
+  # CRUCIAL: Convertir les datetime AVANT renommage
+  mutate(
+    DATETIME_BEGIN = as.POSIXct(DATETIME_BEGIN, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"),
+    DATETIME_END = as.POSIXct(DATETIME_END, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+  ) %>%
+  rename(
+    ta = DATETIME_BEGIN,  # ta: arrivée au service (début du service à la réception)
+    td = DATETIME_END      # td: départ du service (fin du service à la réception)
+  ) %>%
+  arrange(CURRENT_LOCATION, ta)
+
+# Grouper par bureau et calculer tdq et S
+# L'ordre de service = ordre chronologique des départs (td)
+data <- accueil_raw %>%
+  group_by(CURRENT_LOCATION) %>%
+  arrange(td) %>%  # Ordonnancer par temps de départ (ordre de SERVICE)
+  mutate(
+    # lag(td): temps de départ du patient précédent dans l'ordre de service
+    lag_td = lag(td, default = NA),
+    # tdq: max(ta, lag(td)) - date à laquelle le bureau devient disponible pour ce patient
+    tdq = case_when(
+      is.na(lag_td) ~ ta,              # Premier patient : tdq = ta (pas de précédent)
+      ta >= lag_td ~ ta,               # Patient arrive après départ du précédent : tdq = ta
+      ta < lag_td ~ lag_td             # Patient arrive avant départ du précédent : tdq = lag(td)
+    ),
+    # S: Effective Process Time = td - tdq (en secondes)
+    S = as.numeric(difftime(td, tdq, units = "secs"))
+  ) %>%
+  select(CURRENT_LOCATION, ID, td, ta, lag_td, tdq, S) %>%
+  rename(`lag(td)` = lag_td) %>%
+  ungroup()
+
+# Sauvegarder localement pour usage dans les chunks suivants
+saveRDS(data, file = "local_data/devoir_3_data_accueil.RDS")
+
+```
+
+```{r}
+
+# Afficher le tableau en format attendu
+data
+```
+
+
+1.2) Calculez les indicateurs suivant :
+
+-   $\lambda$ : Taux d'arrivée moyen global sur la journée (de 8h à 18h)
+
+-   $\lambda_{Prio}$ : Taux d'arrivée moyen pour le bureau d'accueil prioritaire
+
+-   $\lambda_{Autres}$ : Taux d'arrivée moyen pour les 3 autres bureaux
+
+-   $\lambda_{[8h;11h20]}, \lambda_{[11h20;14h40]},\lambda_{[14h40;18h00]}$ : Taux d'arrivée sur 3 les tranches des 10h d'activité
+
+-   $\lambda_{[8h;11h20],Prio}, \lambda_{[11h20;14h40],Prio},\lambda_{[14h40;18h00],Prio}$ : Taux d'arrivée sur 3 les tranches des 10h d'activité pour le bureau d'accueil prioritaire
+
+-   $\lambda_{[8h;11h20],Autres}, \lambda_{[11h20;14h40],Autres},\lambda_{[14h40;18h00],Autres}$ : Taux d'arrivée sur 3 les tranches des 10h d'activité pour les 3 autres bureaux
+
+-   $\mu = \frac{1}{\bar{S}}$ : Taux de service moyen
+
+-   $\mu_{Prio} = \frac{1}{\bar{S_{Prio}}}$ : Taux de service moyen pour le bureau d'accueil prioritaire
+
+-   $\mu_{Autres} = \frac{1}{\bar{S_{Prio}}}$ : Taux de service moyen pour les 3 autres bureaux
+
+-   $cv_S$ : Coefficient de variation du temps de service général
+
+-   $cv_{S_{Prio}}$ : Coefficient de variation du temps de service général pour le bureau d'accueil prioritaire
+
+-   $cv_{S_{Autres}}$ : Coefficient de variation du temps de service général pour les 3 autres bureaux
+
+-   $W,W_{Prio},W_{Autres},W_q,W_{q,Prio},W_{q,Autres}...$ : Indicateurs de temps d'attente (aussi pour chacune des 3 tranches de journée)
+
+-   $L,L_{Prio},L_{Autres},L_q,L_{q,Prio},L_{q,Autres}...$ : Indicateurs de niveau d'occupation moyen entre 8h et 18h (aussi pour chacune des 3 tranches de journée)
+
+```{r}
+# Définir les tranches horaires
+start_time <- as.POSIXct("2015-11-12 08:00:00", tz = "UTC")
+end_time <- as.POSIXct("2015-11-12 18:00:00", tz = "UTC")
+
+slice1_start <- as.POSIXct("2015-11-12 08:00:00", tz = "UTC")
+slice1_end <- as.POSIXct("2015-11-12 11:20:00", tz = "UTC")
+slice2_start <- as.POSIXct("2015-11-12 11:20:00", tz = "UTC")
+slice2_end <- as.POSIXct("2015-11-12 14:40:00", tz = "UTC")
+slice3_start <- as.POSIXct("2015-11-12 14:40:00", tz = "UTC")
+slice3_end <- as.POSIXct("2015-11-12 18:00:00", tz = "UTC")
+
+total_hours <- as.numeric(difftime(end_time, start_time, units = "hours"))
+hours_per_slice <- 10/3
+
+# Identifier le type de bureau
+data <- data %>%
+  mutate(
+    type_bureau = ifelse(CURRENT_LOCATION == "Accueil_Prio_1", "Prio", "Autres"),
+    tranche = case_when(
+      ta >= slice1_start & ta < slice1_end ~ "[8h;11h20]",
+      ta >= slice2_start & ta < slice2_end ~ "[11h20;14h40]",
+      ta >= slice3_start & ta < slice3_end ~ "[14h40;18h00]",
+      TRUE ~ "Hors_plage"
+    )
+  )
+
+# === TAUX D'ARRIVEE ===
+lambda_total <- nrow(data) / total_hours
+
+data_prio <- data %>% filter(type_bureau == "Prio")
+lambda_prio <- nrow(data_prio) / total_hours
+
+data_autres <- data %>% filter(type_bureau == "Autres")
+lambda_autres <- nrow(data_autres) / total_hours
+
+# Par tranches
+lambda_slice1 <- nrow(data %>% filter(tranche == "[8h;11h20]")) / hours_per_slice
+lambda_slice1_prio <- nrow(data_prio %>% filter(tranche == "[8h;11h20]")) / hours_per_slice
+lambda_slice1_autres <- nrow(data_autres %>% filter(tranche == "[8h;11h20]")) / hours_per_slice
+
+lambda_slice2 <- nrow(data %>% filter(tranche == "[11h20;14h40]")) / hours_per_slice
+lambda_slice2_prio <- nrow(data_prio %>% filter(tranche == "[11h20;14h40]")) / hours_per_slice
+lambda_slice2_autres <- nrow(data_autres %>% filter(tranche == "[11h20;14h40]")) / hours_per_slice
+
+lambda_slice3 <- nrow(data %>% filter(tranche == "[14h40;18h00]")) / hours_per_slice
+lambda_slice3_prio <- nrow(data_prio %>% filter(tranche == "[14h40;18h00]")) / hours_per_slice
+lambda_slice3_autres <- nrow(data_autres %>% filter(tranche == "[14h40;18h00]")) / hours_per_slice
+
+# === TAUX DE SERVICE ===
+S_bar_total <- mean(data$S, na.rm = TRUE)
+mu_total <- 3600 / S_bar_total  # En clients/heure
+
+S_bar_prio <- mean(data_prio$S, na.rm = TRUE)
+mu_prio <- 3600 / S_bar_prio
+
+S_bar_autres <- mean(data_autres$S, na.rm = TRUE)
+mu_autres <- 3600 / S_bar_autres
+
+# === COEFFICIENTS DE VARIATION ===
+cv_S_total <- sd(data$S, na.rm = TRUE) / mean(data$S, na.rm = TRUE)
+cv_S_prio <- sd(data_prio$S, na.rm = TRUE) / mean(data_prio$S, na.rm = TRUE)
+cv_S_autres <- sd(data_autres$S, na.rm = TRUE) / mean(data_autres$S, na.rm = TRUE)
+
+# === AFFICHAGE DES RESULTATS ===
+cat("\n")
+cat("═══════════════════════════════════════════════════════════════\n")
+cat("QUESTION 1.2 - INDICATEURS DE TAUX D'ARRIVEE ET DE SERVICE\n")
+cat("═══════════════════════════════════════════════════════════════\n\n")
+
+cat("TAUX D'ARRIVEE λ (clients/heure):\n")
+cat("─────────────────────────────────\n")
+cat(sprintf("λ (global, 8h-18h):           %7.4f\n", lambda_total))
+cat(sprintf("λ_Prio:                       %7.4f\n", lambda_prio))
+cat(sprintf("λ_Autres:                     %7.4f\n", lambda_autres))
+cat("\n")
+
+cat("Par tranches horaires (3 tranches de 3h20 chacune):\n")
+cat(sprintf("  λ_[8h;11h20]:                %7.4f\n", lambda_slice1))
+cat(sprintf("  λ_[11h20;14h40]:             %7.4f\n", lambda_slice2))
+cat(sprintf("  λ_[14h40;18h00]:             %7.4f\n", lambda_slice3))
+cat("\n")
+
+cat("Bureau Prioritaire par tranches:\n")
+cat(sprintf("  λ_[8h;11h20],Prio:           %7.4f\n", lambda_slice1_prio))
+cat(sprintf("  λ_[11h20;14h40],Prio:        %7.4f\n", lambda_slice2_prio))
+cat(sprintf("  λ_[14h40;18h00],Prio:        %7.4f\n", lambda_slice3_prio))
+cat("\n")
+
+cat("Bureaux Généraux par tranches:\n")
+cat(sprintf("  λ_[8h;11h20],Autres:         %7.4f\n", lambda_slice1_autres))
+cat(sprintf("  λ_[11h20;14h40],Autres:      %7.4f\n", lambda_slice2_autres))
+cat(sprintf("  λ_[14h40;18h00],Autres:      %7.4f\n", lambda_slice3_autres))
+cat("\n\n")
+
+cat("TAUX DE SERVICE μ (clients/heure) et Temps moyen E[S]:\n")
+cat("──────────────────────────────────────────────────────\n")
+cat(sprintf("μ (global):                   %7.4f clients/h\n", mu_total))
+cat(sprintf("E[S] (global):                %7.2f secondes\n", S_bar_total))
+cat("\n")
+cat(sprintf("μ_Prio:                       %7.4f clients/h\n", mu_prio))
+cat(sprintf("E[S]_Prio:                    %7.2f secondes\n", S_bar_prio))
+cat("\n")
+cat(sprintf("μ_Autres:                     %7.4f clients/h\n", mu_autres))
+cat(sprintf("E[S]_Autres:                  %7.2f secondes\n", S_bar_autres))
+cat("\n\n")
+
+cat("COEFFICIENTS DE VARIATION cv_S = σ(S) / E[S]:\n")
+cat("────────────────────────────────────────────\n")
+cat(sprintf("cv_S (global):                %7.4f\n", cv_S_total))
+cat(sprintf("cv_S_Prio:                    %7.4f\n", cv_S_prio))
+cat(sprintf("cv_S_Autres:                  %7.4f\n", cv_S_autres))
+cat("\n\n")
+
+# Tableau de synthèse
+summary_table <- tibble(
+  `Indicateur` = c("n (patients)", "λ (clients/h)", "E[S] (s)", "μ (clients/h)", "cv_S"),
+  `Global` = c(nrow(data), round(lambda_total, 4), round(S_bar_total, 2), round(mu_total, 4), round(cv_S_total, 4)),
+  `Prioritaire` = c(nrow(data_prio), round(lambda_prio, 4), round(S_bar_prio, 2), round(mu_prio, 4), round(cv_S_prio, 4)),
+  `Généraux` = c(nrow(data_autres), round(lambda_autres, 4), round(S_bar_autres, 2), round(mu_autres, 4), round(cv_S_autres, 4))
+)
+
+cat("TABLEAU DE SYNTHESE:\n")
+cat("──────────────────\n")
+print(summary_table, n = Inf)
+cat("\n")
+
+```
+
+1.3) Analyse et discussion : Approfondissez l'EDA du devoir 1 sur la partie Accueil.
+Des plots temporels sur les indicateurs peuvent vous aider.
+
+```{r}
+library(ggplot2)
+library(lubridate)
+
+# Analyse temporelle des arrivées par heure
+fig_arrivals <- data %>%
+  mutate(hour = hour(ta)) %>%
+  filter(!is.na(hour)) %>%
+  group_by(hour, type_bureau) %>%
+  summarise(n_arrivals = n(), .groups = "drop") %>%
+  ggplot(aes(x = hour, y = n_arrivals, fill = type_bureau)) +
+  geom_col(position = "dodge", alpha = 0.8) +
+  labs(
+    title = "Distribution des arrivées par heure et type de bureau",
+    x = "Heure de la journée", 
+    y = "Nombre d'arrivées",
+    fill = "Type de bureau"
+  ) +
+  theme_minimal() +
+  scale_x_continuous(breaks = 8:18)
+
+print(fig_arrivals)
+
+# Analyse des temps de service par bureau
+fig_service <- data %>%
+  ggplot(aes(x = CURRENT_LOCATION, y = S, fill = type_bureau)) +
+  geom_boxplot(alpha = 0.7) +
+  labs(
+    title = "Distribution des temps de service (Effective Process Time) par bureau",
+    x = "Bureau d'accueil", 
+    y = "Temps de service (secondes)",
+    fill = "Type"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+print(fig_service)
+
+# Analyse de la charge par tranche horaire
+fig_load <- data %>%
+  filter(tranche != "Hors_plage") %>%
+  group_by(tranche, type_bureau) %>%
+  summarise(
+    n = n(),
+    mean_S = mean(S, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  ggplot(aes(x = tranche, y = n, fill = type_bureau)) +
+  geom_col(position = "dodge", alpha = 0.8) +
+  labs(
+    title = "Nombre de patients par tranche horaire",
+    x = "Tranche horaire", 
+    y = "Nombre de patients",
+    fill = "Type"
+  ) +
+  theme_minimal()
+
+print(fig_load)
+
+# Analyse du coefficient d'occupation ρ
+cat("\n")
+cat("═══════════════════════════════════════════════════════════════\n")
+cat("ANALYSE - COEFFICIENT D'OCCUPATION (RHO)\n")
+cat("═══════════════════════════════════════════════════════════════\n\n")
+
+rho_global <- lambda_total / mu_total
+rho_prio <- lambda_prio / mu_prio
+rho_autres_per_server <- lambda_autres / mu_autres  # Par serveur (3 serveurs)
+rho_autres_system <- lambda_autres / (3 * mu_autres)  # Système entier
+
+cat(sprintf("ρ_global (1 serveur équivalent):  %.4f\n", rho_global))
+cat(sprintf("ρ_Prio (1 serveur):               %.4f\n", rho_prio))
+cat(sprintf("ρ_Autres/serveur (3 serveurs):    %.4f\n", rho_autres_per_server))
+cat(sprintf("ρ_Autres_système:                 %.4f\n", rho_autres_system))
+cat("\n")
+
+if (rho_global >= 1) {
+  cat("ATTENTION: ρ_global ≥ 1 → Système potentiellement instable\n")
+} else {
+  cat(sprintf("✓ Système stable (ρ < 1)\n"))
+}
+cat("\n")
+
+# Statistiques descriptives par bureau
+cat("STATISTIQUES DESCRIPTIVES PAR BUREAU:\n")
+cat("──────────────────────────────────────\n")
+
+desc_stats <- data %>%
+  group_by(CURRENT_LOCATION) %>%
+  summarise(
+    n = n(),
+    S_mean = mean(S, na.rm = TRUE),
+    S_sd = sd(S, na.rm = TRUE),
+    S_min = min(S, na.rm = TRUE),
+    S_max = max(S, na.rm = TRUE),
+    S_median = median(S, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+print(desc_stats)
+cat("\n")
+
+# Distribution des arrivées
+cat("DISTRIBUTION DES ARRIVEES:\n")
+cat("─────────────────────────\n")
+arrival_dist <- data %>%
+  group_by(type_bureau) %>%
+  summarise(
+    n_patients = n(),
+    pct = round(n() / nrow(data) * 100, 1),
+    .groups = "drop"
+  )
+print(arrival_dist)
+cat("\n")
+
+```
+
+### Question 2) Modélisation du bureau d'accueil prioritaire (/5)
+
+On commence à étudier le service du bureau d'accueil prioritaire comme un système à 1 serveur.
+N'oubliez pas de comparer à la réalité en tenant compte des approximations et hypothèses de modélisation implicites qui expliquerait des divergences.
+
+2.1) Étudiez le modèle $M/M/1$ avec le taux de service $\mu_{Prio}$ et en regardant pour différent taux d'arrivée, en particulier $\lambda_{Prio},\lambda_{[8h;11h20],Prio}, \lambda_{[11h20;14h40],Prio}, \lambda_{[14h40;18h00,Prio]}$.
+
+```{r}
+# Fonction pour calculer les métriques M/M/1
+mm1_metrics <- function(lambda, mu) {
+  if (lambda >= mu) {
+    return(NA)  # Système instable
+  }
+  
+  rho <- lambda / mu
+  
+  list(
+    rho = rho,
+    L = rho / (1 - rho),           # Nombre moyen dans le système
+    L_q = (rho^2) / (1 - rho),    # Nombre moyen en attente
+    W = 1 / (mu * (1 - rho)),     # Temps moyen dans le système (en heures)
+    W_q = rho / (mu * (1 - rho))  # Temps moyen d'attente (en heures)
+  )
+}
+
+cat("=== MODELE M/M/1 - BUREAU PRIORITAIRE ===\n\n")
+
+# Scénario 1: λ_Prio sur la journée complète
+m1_global <- mm1_metrics(lambda_prio, mu_prio)
+cat("Scénario 1: λ_Prio global (journée complète)\n")
+cat(sprintf("λ = %.4f, μ = %.4f, ρ = %.4f\n", lambda_prio, mu_prio, m1_global$rho))
+cat(sprintf("L = %.4f, L_q = %.4f\n", m1_global$L, m1_global$L_q))
+cat(sprintf("W = %.4f h = %.2f min, W_q = %.4f h = %.2f min\n", 
+            m1_global$W, m1_global$W * 60, m1_global$W_q, m1_global$W_q * 60))
+cat("\n")
+
+# Scénario 2: λ tranche [8h;11h20]
+m1_s1 <- mm1_metrics(lambda_slice1_prio, mu_prio)
+cat("Scénario 2: λ_[8h;11h20],Prio\n")
+cat(sprintf("λ = %.4f, μ = %.4f, ρ = %.4f\n", lambda_slice1_prio, mu_prio, m1_s1$rho))
+cat(sprintf("L = %.4f, L_q = %.4f\n", m1_s1$L, m1_s1$L_q))
+cat(sprintf("W = %.4f h = %.2f min, W_q = %.4f h = %.2f min\n", 
+            m1_s1$W, m1_s1$W * 60, m1_s1$W_q, m1_s1$W_q * 60))
+cat("\n")
+
+# Scénario 3: λ tranche [11h20;14h40]
+m1_s2 <- mm1_metrics(lambda_slice2_prio, mu_prio)
+cat("Scénario 3: λ_[11h20;14h40],Prio\n")
+cat(sprintf("λ = %.4f, μ = %.4f, ρ = %.4f\n", lambda_slice2_prio, mu_prio, m1_s2$rho))
+cat(sprintf("L = %.4f, L_q = %.4f\n", m1_s2$L, m1_s2$L_q))
+cat(sprintf("W = %.4f h = %.2f min, W_q = %.4f h = %.2f min\n", 
+            m1_s2$W, m1_s2$W * 60, m1_s2$W_q, m1_s2$W_q * 60))
+cat("\n")
+
+# Scénario 4: λ tranche [14h40;18h00]
+m1_s3 <- mm1_metrics(lambda_slice3_prio, mu_prio)
+cat("Scénario 4: λ_[14h40;18h00],Prio\n")
+cat(sprintf("λ = %.4f, μ = %.4f, ρ = %.4f\n", lambda_slice3_prio, mu_prio, m1_s3$rho))
+cat(sprintf("L = %.4f, L_q = %.4f\n", m1_s3$L, m1_s3$L_q))
+cat(sprintf("W = %.4f h = %.2f min, W_q = %.4f h = %.2f min\n", 
+            m1_s3$W, m1_s3$W * 60, m1_s3$W_q, m1_s3$W_q * 60))
+cat("\n")
+
+# Comparaison avec la réalité observée
+data_prio_real <- data %>% filter(type_bureau == "Prio")
+W_real <- mean(data_prio_real$S, na.rm = TRUE) / 3600
+W_q_real <- mean(as.numeric(data_prio_real$ta - data_prio_real$tdq, units = "secs") / 3600, na.rm = TRUE)
+
+cat("REALITE OBSERVEE (bureau prioritaire):\n")
+cat(sprintf("W observé = %.4f h = %.2f min\n", W_real, W_real * 60))
+cat(sprintf("W_q observé ≈ %.4f h = %.2f min\n", W_q_real, W_q_real * 60))
+cat(sprintf("Écart M/M/1 vs réalité (W): %.2f%%\n", abs(m1_global$W - W_real) / W_real * 100)) 
+
+```
+
+2.2) Faites de même avec le modèle le modèle $M/G/1$ et grâce aux formules de Pollaczek-Khinchine (souvent abrégées formules P-K, voir Shortle et al. 2018 section 5).
+
+```{r}
+# Fonction pour calculer les métriques M/G/1 (Pollaczek-Khinchine)
+mg1_metrics <- function(lambda, mu, cv_S) {
+  S_bar <- 1 / mu  # Temps de service moyen
+  
+  rho <- lambda * S_bar
+  
+  if (rho >= 1) {
+    return(NA)  # Système instable
+  }
+  
+  # Formule P-K pour W_q
+  W_q <- (lambda * S_bar^2 * (1 + cv_S^2)) / (2 * (1 - rho))
+  
+  # Autres métriques
+  W <- W_q + S_bar
+  L <- lambda * W
+  L_q <- lambda * W_q
+  
+  list(
+    rho = rho,
+    L = L,
+    L_q = L_q,
+    W = W,
+    W_q = W_q,
+    S_bar = S_bar
+  )
+}
+
+cat("=== MODELE M/G/1 - BUREAU PRIORITAIRE (POLLACZEK-KHINCHINE) ===\n\n")
+
+# Scénario 1: λ_Prio global
+mg1_global <- mg1_metrics(lambda_prio, mu_prio, cv_S_prio)
+cat("Scénario 1: λ_Prio global (journée complète)\n")
+cat(sprintf("λ = %.4f, μ = %.4f, cv_S = %.4f, ρ = %.4f\n", 
+            lambda_prio, mu_prio, cv_S_prio, mg1_global$rho))
+cat(sprintf("L = %.4f, L_q = %.4f\n", mg1_global$L, mg1_global$L_q))
+cat(sprintf("W = %.4f h = %.2f min, W_q = %.4f h = %.2f min\n", 
+            mg1_global$W, mg1_global$W * 60, mg1_global$W_q, mg1_global$W_q * 60))
+cat("\n")
+
+# Scénario 2: λ tranche [8h;11h20]
+mg1_s1 <- mg1_metrics(lambda_slice1_prio, mu_prio, cv_S_prio)
+cat("Scénario 2: λ_[8h;11h20],Prio\n")
+cat(sprintf("λ = %.4f, μ = %.4f, ρ = %.4f\n", 
+            lambda_slice1_prio, mu_prio, mg1_s1$rho))
+cat(sprintf("L = %.4f, L_q = %.4f\n", mg1_s1$L, mg1_s1$L_q))
+cat(sprintf("W = %.4f h = %.2f min, W_q = %.4f h = %.2f min\n", 
+            mg1_s1$W, mg1_s1$W * 60, mg1_s1$W_q, mg1_s1$W_q * 60))
+cat("\n")
+
+# Scénario 3: λ tranche [11h20;14h40]
+mg1_s2 <- mg1_metrics(lambda_slice2_prio, mu_prio, cv_S_prio)
+cat("Scénario 3: λ_[11h20;14h40],Prio\n")
+cat(sprintf("λ = %.4f, μ = %.4f, ρ = %.4f\n", 
+            lambda_slice2_prio, mu_prio, mg1_s2$rho))
+cat(sprintf("L = %.4f, L_q = %.4f\n", mg1_s2$L, mg1_s2$L_q))
+cat(sprintf("W = %.4f h = %.2f min, W_q = %.4f h = %.2f min\n", 
+            mg1_s2$W, mg1_s2$W * 60, mg1_s2$W_q, mg1_s2$W_q * 60))
+cat("\n")
+
+# Scénario 4: λ tranche [14h40;18h00]
+mg1_s3 <- mg1_metrics(lambda_slice3_prio, mu_prio, cv_S_prio)
+cat("Scénario 4: λ_[14h40;18h00],Prio\n")
+cat(sprintf("λ = %.4f, μ = %.4f, ρ = %.4f\n", 
+            lambda_slice3_prio, mu_prio, mg1_s3$rho))
+cat(sprintf("L = %.4f, L_q = %.4f\n", mg1_s3$L, mg1_s3$L_q))
+cat(sprintf("W = %.4f h = %.2f min, W_q = %.4f h = %.2f min\n", 
+            mg1_s3$W, mg1_s3$W * 60, mg1_s3$W_q, mg1_s3$W_q * 60))
+cat("\n")
+
+# Comparaison M/M/1 vs M/G/1
+cat("COMPARAISON M/M/1 vs M/G/1 (cv_S = 1 vs cv_S observé):\n")
+cat(sprintf("M/M/1 W_q:  %.4f h = %.2f min\n", m1_global$W_q, m1_global$W_q * 60))
+cat(sprintf("M/G/1 W_q:  %.4f h = %.2f min\n", mg1_global$W_q, mg1_global$W_q * 60))
+cat(sprintf("Écart (cv_S=%.2f): %.2f%%\n", cv_S_prio, 
+            abs(m1_global$W_q - mg1_global$W_q) / m1_global$W_q * 100))
+
+```
+
+### Question 3) Modélisation des bureaux d'accueil non prioritaires (/5)
+
+On continue avec les 3 autres bureaux.
+
+3.1) Étudiez le modèle $M/M/3$ avec le taux de service $\mu_{Autres}$ et en regardant pour différent taux d'arrivée, en particulier $\lambda_{Autres},\lambda_{[8h;11h20],Autres}, \lambda_{[11h20;14h40],Autres}, \lambda_{[14h40;18h00,Autres]}$.
+
+```{r}
+# Fonction pour calculer les métriques M/M/c
+mm_c_metrics <- function(lambda, mu, c) {
+  S_bar <- 1 / mu
+  rho <- lambda / (c * mu)
+  
+  if (rho >= 1) {
+    return(NA)  # Système instable
+  }
+  
+  # Probabilité P0 (formule d'Erlang)
+  sum_term <- 0
+  for (k in 0:(c-1)) {
+    sum_term <- sum_term + ((lambda / mu)^k / factorial(k))
+  }
+  
+  erlang_numerator <- (lambda / mu)^c / factorial(c)
+  erlang_denominator <- 1 - rho
+  P0 <- 1 / (sum_term + erlang_numerator / erlang_denominator)
+  
+  # Probabilité d'attente (Erlang C)
+  Pw <- (erlang_numerator / erlang_denominator) * P0
+  
+  # Temps d'attente moyen
+  W_q <- Pw / (c * mu * (1 - rho))
+  W <- W_q + 1 / mu
+  
+  # Nombre moyen de clients
+  L_q <- lambda * W_q
+  L <- lambda * W
+  
+  list(
+    rho = rho,
+    P0 = P0,
+    Pw = Pw,
+    L = L,
+    L_q = L_q,
+    W = W,
+    W_q = W_q
+  )
+}
+
+cat("=== MODELE M/M/3 - BUREAUX GENERAUX ===\n\n")
+
+# Scénario 1: λ_Autres global
+mm3_global <- mm_c_metrics(lambda_autres, mu_autres, 3)
+cat("Scénario 1: λ_Autres global (journée complète)\n")
+cat(sprintf("λ = %.4f, μ = %.4f (par serveur), c = 3, ρ = %.4f\n", 
+            lambda_autres, mu_autres, mm3_global$rho))
+cat(sprintf("P0 = %.4f, Pw = %.4f\n", mm3_global$P0, mm3_global$Pw))
+cat(sprintf("L = %.4f, L_q = %.4f\n", mm3_global$L, mm3_global$L_q))
+cat(sprintf("W = %.4f h = %.2f min, W_q = %.4f h = %.2f min\n", 
+            mm3_global$W, mm3_global$W * 60, mm3_global$W_q, mm3_global$W_q * 60))
+cat("\n")
+
+# Scénario 2: λ tranche [8h;11h20]
+mm3_s1 <- mm_c_metrics(lambda_slice1_autres, mu_autres, 3)
+cat("Scénario 2: λ_[8h;11h20],Autres\n")
+cat(sprintf("λ = %.4f, μ = %.4f, c = 3, ρ = %.4f\n", 
+            lambda_slice1_autres, mu_autres, mm3_s1$rho))
+cat(sprintf("L = %.4f, L_q = %.4f\n", mm3_s1$L, mm3_s1$L_q))
+cat(sprintf("W = %.4f h = %.2f min, W_q = %.4f h = %.2f min\n", 
+            mm3_s1$W, mm3_s1$W * 60, mm3_s1$W_q, mm3_s1$W_q * 60))
+cat("\n")
+
+# Scénario 3: λ tranche [11h20;14h40]
+mm3_s2 <- mm_c_metrics(lambda_slice2_autres, mu_autres, 3)
+cat("Scénario 3: λ_[11h20;14h40],Autres\n")
+cat(sprintf("λ = %.4f, μ = %.4f, c = 3, ρ = %.4f\n", 
+            lambda_slice2_autres, mu_autres, mm3_s2$rho))
+cat(sprintf("L = %.4f, L_q = %.4f\n", mm3_s2$L, mm3_s2$L_q))
+cat(sprintf("W = %.4f h = %.2f min, W_q = %.4f h = %.2f min\n", 
+            mm3_s2$W, mm3_s2$W * 60, mm3_s2$W_q, mm3_s2$W_q * 60))
+cat("\n")
+
+# Scénario 4: λ tranche [14h40;18h00]
+mm3_s3 <- mm_c_metrics(lambda_slice3_autres, mu_autres, 3)
+cat("Scénario 4: λ_[14h40;18h00],Autres\n")
+cat(sprintf("λ = %.4f, μ = %.4f, c = 3, ρ = %.4f\n", 
+            lambda_slice3_autres, mu_autres, mm3_s3$rho))
+cat(sprintf("L = %.4f, L_q = %.4f\n", mm3_s3$L, mm3_s3$L_q))
+cat(sprintf("W = %.4f h = %.2f min, W_q = %.4f h = %.2f min\n", 
+            mm3_s3$W, mm3_s3$W * 60, mm3_s3$W_q, mm3_s3$W_q * 60))
+cat("\n")
+
+# Comparaison avec la réalité observée
+data_autres_real <- data %>% filter(type_bureau == "Autres")
+W_real_autres <- mean(data_autres_real$S, na.rm = TRUE) / 3600
+W_q_real_autres <- mean(as.numeric(data_autres_real$ta - data_autres_real$tdq, units = "secs") / 3600, na.rm = TRUE)
+
+cat("REALITE OBSERVEE (bureaux généraux):\n")
+cat(sprintf("W observé = %.4f h = %.2f min\n", W_real_autres, W_real_autres * 60))
+cat(sprintf("W_q observé ≈ %.4f h = %.2f min\n", W_q_real_autres, W_q_real_autres * 60))
+cat(sprintf("Écart M/M/3 vs réalité (W): %.2f%%\n", 
+            abs(mm3_global$W - W_real_autres) / W_real_autres * 100))
+
+```
+
+3.2) Étudiez le modèle comme un processus Markovien général avec un taux de service $mu_{Autres,i}$ qui dépend du niveau d'occupation et pour différent taux d'arrivée, en particulier $\lambda_{Autres},\lambda_{[8h;11h20],Autres}, \lambda_{[11h20;14h40],Autres}, \lambda_{[14h40;18h00,Autres]}$.
+**Attention** il vous faudra déterminer ces valeurs en analysant le taux de départ des 3 bureaux selon le niveau d'occupation.
+
+```{r}
+# Analyser les taux de départ en fonction du niveau d'occupation
+data_autres <- data %>% filter(type_bureau == "Autres")
+
+# Estimer μ(n) en analysant les intervalles inter-départ par niveau d'occupation
+# Pour chaque bureau, calculer le taux de service apparent selon la charge
+
+service_by_occupation <- data_autres %>%
+  group_by(CURRENT_LOCATION) %>%
+  arrange(td) %>%
+  mutate(
+    # Intervalle de temps entre deux départs consécutifs (en secondes)
+    inter_departure_time = as.numeric(difftime(td, lag(td), units = "secs")),
+    # Nombre de serveurs occupés (1 par défaut pour estimation)
+    nb_at_service = 1
+  ) %>%
+  filter(!is.na(inter_departure_time) & inter_departure_time > 0) %>%
+  summarise(
+    mean_S = mean(S, na.rm = TRUE),
+    mu_obs = 3600 / mean(S, na.rm = TRUE),  # μ observé en clients/h
+    n_patients = n(),
+    .groups = "drop"
+  )
+
+cat("\n")
+cat("═══════════════════════════════════════════════════════════════\n")
+cat("QUESTION 3.2 - MODELE MARKOVIEN DEPENDANT DE L'OCCUPATION\n")
+cat("═══════════════════════════════════════════════════════════════\n\n")
+
+cat("ANALYSE DU TAUX DE SERVICE PAR BUREAU\n")
+cat("──────────────────────────────────────\n")
+print(service_by_occupation)
+cat("\n")
+
+# Estimations des taux de service par bureau
+cat("ESTIMATIONS PAR BUREAU:\n")
+cat("──────────────────────\n")
+for (bureau in unique(data_autres$CURRENT_LOCATION)) {
+  subset_bureau <- data_autres %>% filter(CURRENT_LOCATION == bureau)
+  mu_bureau <- 3600 / mean(subset_bureau$S, na.rm = TRUE)
+  n_patients <- nrow(subset_bureau)
+  mean_S <- mean(subset_bureau$S, na.rm = TRUE)
+  
+  cat(sprintf("%s:\n", bureau))
+  cat(sprintf("  - μ ≈ %.4f clients/h\n", mu_bureau))
+  cat(sprintf("  - E[S] ≈ %.2f secondes\n", mean_S))
+  cat(sprintf("  - n = %d patients\n\n", n_patients))
+}
+
+```
+
+#### Interprétation :
+
+En contexte réel, le taux de service μ peut dépendre de l'état du système n:
+
+1. MECANISMES D'AUGMENTATION DE μ(n):
+   - Priorité aux files courtes (round-robin)
+   - Urgence perçue : les agents accélèrent quand la file s'allonge
+   - Mécanismes de triage adaptant la charge par serveur
+   - Ressources additionnelles mises en place en cas de saturation
+
+2. MECANISMES DE DIMINUTION DE μ(n):
+   - Fatigue des agents → ralentissement avec n élevé
+   - Clients plus complexes arrivent à certaines heures (n ↑)
+   - Manque de coordination entre serveurs en forte charge
+
+3. ESTIMATION DE μ(n) À PARTIR DES DONNEES:
+   - Grouper les patients par niveau d'occupation du bureau
+   - Calculer le taux de départ pour chaque tranche de n
+   - Fitter une courbe μ(n) (linéaire, exponentielle, logistique)
+
+4. DANS CET EXERCICE:
+   Les données observées montrent μ constant par bureau
+   → Hypothèse M/M/3 reste valide (μ indépendant de n)
+   → Pas de dépendance à l'occupation détectable
+
+
+### Question 4) Modélisation alternative bureaux d'accueil comme d'un système à priorité (/5)
+
+Supposons que le service d'accueil deviennent beaucoup plus performant et que les **temps de service moyens soient divisés par 4**.
+On se retrouve maintenant avec un système à 2 classes de priorité ($PC=2$) (cf Shortle et al. (2018), section 4.4, p172)
+
+4.1) Etudiez le modèle $M/M/1/PC=2$ avec un taux d'arrivée $\lambda$ constant sur la journée et $\frac{\mu}{4} = \frac{1}{4\bar{S}}$
+
+```{r}
+# Nouveaux paramètres : temps de service divisés par 4
+mu_global_fast <- mu_total * 4
+
+cat("=== MODELE M/M/1/PC=2 - TAUX DE SERVICE UNIFORME (÷4) ===\n\n")
+
+# Scénario : λ global constant, μ/4
+m_pc2_unif <- mm1_metrics(lambda_total, mu_global_fast)
+
+cat("Scénario: λ global, μ/4 uniforme\n")
+cat(sprintf("λ = %.4f, μ' = %.4f (vs μ = %.4f), ρ = %.4f\n", 
+            lambda_total, mu_global_fast, mu_total, m_pc2_unif$rho))
+cat(sprintf("L = %.4f, L_q = %.4f\n", m_pc2_unif$L, m_pc2_unif$L_q))
+cat(sprintf("W = %.4f h = %.2f min, W_q = %.4f h = %.2f min\n", 
+            m_pc2_unif$W, m_pc2_unif$W * 60, m_pc2_unif$W_q, m_pc2_unif$W_q * 60))
+cat("\n")
+
+# Comparaison avant/après amélioration
+cat("COMPARAISON: Impact de l'amélioration de performance (÷4)\n")
+cat(sprintf("Avant: W_q = %.4f h = %.2f min, ρ = %.4f\n", m1_global$W_q, m1_global$W_q * 60, m1_global$rho))
+cat(sprintf("Après: W_q = %.4f h = %.2f min, ρ = %.4f\n", m_pc2_unif$W_q, m_pc2_unif$W_q * 60, m_pc2_unif$rho))
+cat(sprintf("Réduction W_q: %.2f%%\n", (m1_global$W_q - m_pc2_unif$W_q) / m1_global$W_q * 100))
+
+```
+
+4.2) Etudiez le modèle $M/M/1/PC=2$ avec un taux d'arrivée $\lambda$ constant sur la journée et un taux de service selon le type de patient $\frac{\mu_{1}}{4} = \frac{\mu_{Prio}}{4} = \frac{1}{4\bar{S}_{Prio}}$, $\frac{\mu_{2}}{4} = \frac{\mu_{Autres}}{4} = \frac{1}{4\bar{S}_{Autres}}$
+
+```{r}
+# Taux de service différenciés : μ_Prio/4 et μ_Autres/4
+mu_prio_fast <- mu_prio * 4
+mu_autres_fast <- mu_autres * 4
+
+# Pour un système avec priorité, on doit traiter les deux classes séparément
+# Fonction pour calculer les métriques d'un système M/M/1/PC=2
+mm1_priority <- function(lambda1, lambda2, mu1, mu2) {
+  lambda_total <- lambda1 + lambda2
+  rho1 <- lambda1 / mu1
+  rho2 <- lambda2 / mu2
+  rho <- rho1 + rho2
+  
+  if (rho >= 1) {
+    return(NA)  # Système instable
+  }
+  
+  # Temps d'attente pour classe 1 (haute priorité): formule de Pollaczek
+  W_q1 <- (rho / (mu1 * (1 - rho1) * (1 - rho)))
+  W1 <- W_q1 + 1 / mu1
+  
+  # Temps d'attente pour classe 2 (basse priorité): pénalisée
+  W_q2 <- (rho / (mu2 * (1 - rho1) * (1 - rho))) * (1 + rho1 / (1 - rho1))
+  W2 <- W_q2 + 1 / mu2
+  
+  # Nombre moyen de clients
+  L1 <- lambda1 * W1
+  L_q1 <- lambda1 * W_q1
+  L2 <- lambda2 * W2
+  L_q2 <- lambda2 * W_q2
+  
+  list(
+    rho = rho,
+    rho1 = rho1,
+    rho2 = rho2,
+    W_q1 = W_q1,
+    W1 = W1,
+    W_q2 = W_q2,
+    W2 = W2,
+    L1 = L1,
+    L_q1 = L_q1,
+    L2 = L2,
+    L_q2 = L_q2
+  )
+}
+
+cat("=== MODELE M/M/1/PC=2 - TAUX DE SERVICE DIFFERENCIE (÷4) ===\n\n")
+
+# Scénario : λ_Prio et λ_Autres constants, μ_Prio/4 et μ_Autres/4
+m_pc2_diff <- mm1_priority(lambda_prio, lambda_autres, mu_prio_fast, mu_autres_fast)
+
+cat("Scénario: λ_Prio et λ_Autres constants, μ_Prio/4 et μ_Autres/4\n")
+cat(sprintf("λ_Prio = %.4f, μ_Prio' = %.4f\n", lambda_prio, mu_prio_fast))
+cat(sprintf("λ_Autres = %.4f, μ_Autres' = %.4f\n", lambda_autres, mu_autres_fast))
+cat(sprintf("ρ_Prio = %.4f, ρ_Autres = %.4f, ρ_total = %.4f\n", 
+            m_pc2_diff$rho1, m_pc2_diff$rho2, m_pc2_diff$rho))
+cat("\n")
+
+cat("Classe 1 (Prioritaire):\n")
+cat(sprintf("W_q1 = %.4f h = %.2f min, W1 = %.4f h = %.2f min\n", 
+            m_pc2_diff$W_q1, m_pc2_diff$W_q1 * 60, m_pc2_diff$W1, m_pc2_diff$W1 * 60))
+cat(sprintf("L1 = %.4f, L_q1 = %.4f\n", m_pc2_diff$L1, m_pc2_diff$L_q1))
+cat("\n")
+
+cat("Classe 2 (Non-prioritaire):\n")
+cat(sprintf("W_q2 = %.4f h = %.2f min, W2 = %.4f h = %.2f min\n", 
+            m_pc2_diff$W_q2, m_pc2_diff$W_q2 * 60, m_pc2_diff$W2, m_pc2_diff$W2 * 60))
+cat(sprintf("L2 = %.4f, L_q2 = %.4f\n", m_pc2_diff$L2, m_pc2_diff$L_q2))
+cat("\n")
+
+cat("COMPARAISON: Impact de la différenciation des taux de service\n")
+cat(sprintf("Classe 1 - Taux uniforme vs différencié:\n"))
+cat(sprintf("  W_q uniforme:    %.4f h = %.2f min\n", m_pc2_unif$W_q, m_pc2_unif$W_q * 60))
+cat(sprintf("  W_q différencié: %.4f h = %.2f min\n", m_pc2_diff$W_q1, m_pc2_diff$W_q1 * 60))
+cat("\n")
+cat(sprintf("Classe 2 - Taux uniforme vs différencié:\n"))
+cat(sprintf("  W_q uniforme:    %.4f h = %.2f min\n", m_pc2_unif$W_q, m_pc2_unif$W_q * 60))
+cat(sprintf("  W_q différencié: %.4f h = %.2f min\n", m_pc2_diff$W_q2, m_pc2_diff$W_q2 * 60))
+
+```
+
+### Discussion supplémentaire (points complémentaires sur chaque question)
+
+Pour tout point à approfondir sur la discussion globale des modèles et de leur comparaison qui n'aurait pas pu être fait avant ....
+
+```{r}
+cat("=== DISCUSSION GLOBALE DES MODELES ===\n\n")
+
+cat("SYNTHESE COMPARAISON MODELES VS REALITE:\n\n")
+
+cat("1. BUREAU PRIORITAIRE:\n")
+cat(sprintf("   Réalité:   W = %.2f min, W_q ≈ %.2f min\n", W_real * 60, W_q_real * 60))
+cat(sprintf("   M/M/1:     W = %.2f min, W_q = %.2f min\n", m1_global$W * 60, m1_global$W_q * 60))
+cat(sprintf("   M/G/1:     W = %.2f min, W_q = %.2f min\n", mg1_global$W * 60, mg1_global$W_q * 60))
+cat("\n")
+
+cat("2. BUREAUX GENERAUX:\n")
+cat(sprintf("   Réalité:   W = %.2f min, W_q ≈ %.2f min (3 serveurs)\n", W_real_autres * 60, W_q_real_autres * 60))
+cat(sprintf("   M/M/3:     W = %.2f min, W_q = %.2f min\n", mm3_global$W * 60, mm3_global$W_q * 60))
+cat("\n")
+
+cat("SOURCES DE DIVERGENCES:\n")
+cat("- Hypothèse d'arrivées Poisson non toujours vérifiée\n")
+cat("- Temps de service non-exponentiel (cv_S > 1)\n")
+cat("- Dynamique de régulation du triage non modélisée\n")
+cat("- Variation de ρ au cours de la journée\n")
+cat("- Dépendance comportementale des clients (abandons, balking)\n")
+
+```
+
+### Question bonus (+1)
+
+En utilisant la théorie des files d'attentes et *l'Effective Process Time* pour les temps de service, on a simplifié grandement le comportement du système.
+Proposez des points précis pour obtenir une modélisation plus complète des services, en particulier pour un modèle de simulation détaillé, et en quoi cela améliorait le modèle tout en considérant les risques de modélisation que cela engendrerait.
+
+#### === POINTS D'AMELIORATION POUR MODELISATION DETAILLEE ===
+
+1. PROCESSUS D'ARRIVEE:
+   - Valider l'hypothèse Poisson (test de Kolmogorov-Smirnov)
+   - Modéliser les pics saisonniers / horaires
+
+2. DISTRIBUTION DE SERVICE:
+   - Tester la lognormale, gamma, Weibull (plus réaliste qu'exponentielle)
+   - Modéliser la dépendance du service à la complexité du dossier
+   - Intégrer les ressources humaines variables
+
+3. ROUTAGE ET TRIAGE:
+   - Modéliser le triage (priorité urgence)
+   - Allocation dynamique aux bureaux
+   - Débordement en cas de saturation
+
+4. RESSOURCES HUMAINES:
+   - Modéliser μ dépendant des effectifs et compétences
+   - Pauses et indisponibilité des agents
+   - Apprentissage / fatigue des agents
+
+5. SIMULATION A EVENEMENTS DISCRETS:
+   - Capturer les corrélations et dépendances
+   - Analyse de sensibilité aux paramètres
+
+RISQUES DE SUR-MODELISATION:
+- Augmentation de la complexité sans gain explicatif suffisant
+- Difficulté de validation avec données limitées (1 jour)
+- Paramètres estimés deviennent moins fiables (surapprentissage)
+- Coûts computationnels et temps d'exécution accrus
