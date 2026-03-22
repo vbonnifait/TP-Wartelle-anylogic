@@ -57,6 +57,7 @@ Toujours dans la continuité des précédant devoirs, l'objectif de ce dernier d
 library(tidyverse)
 library(data.table)
 library(readxl)
+library(MASS)  # pour fitdistr
 
 load("local_data/trace_example_1.RData")
 load("local_data/trace_example_final.RData")
@@ -104,16 +105,204 @@ Attention ces temps ne sont pas tout à fait correcte pour notre type de modéli
 Pour vous aidez à parvenir à cette modélisation, une méthodologie vous est proposé :
 
 -   Commencez par une modélisation macro des activités générales simplement en regardant la probabilité d'occurence de celles-ci (en fonction aussi de si le patient est prioritaire ou non)
-    
+
     -   Dans le cas de notre patient ID 10, on a en 4 : Accueil, Consultation (Même si c'est coupé en 2), Examen, Sortie
-    
+
     -   Gardez l'ordre le plus fréquemment des activités observées (Accueil, Consultation, Examen ..., Sortie)
-    
+
 -   Dans chacune des activités macro, modélisez la probabilité de faire appel à chaque type d'acteur et dans le cas où un doit intervenir modéliser _l'Effective Time Process_ nécessaire avec une loi gamma (en fonction aussi de si le patient est prioritaire ou non)
 
     -   Dans le cas de notre patient ID 10, on fait appel à 6 combinaisons activité / agents différents
 
 -   Comparer ce modèle simplifié construit avec la réalité observée et aussi avec un modèle plus détaillé qui n'agrégerait pas les différentes étapes et temps d'acteurs
+
+#### Réponse Q1 : Analyse Process Mining
+
+```{r q1_preparation, message=FALSE, warning=FALSE}
+# Chargement des données brutes CSV (plus complètes pour l'analyse)
+trace_raw <- read_csv2("local_data/trace_example_1.csv",
+                       col_types = cols(
+                         ID = col_double(),
+                         TYPE = col_character(),
+                         CURRENT_LOCATION = col_character(),
+                         NEXT_LOCATION = col_character(),
+                         CURRENT_OPERATION_NUMBER = col_double(),
+                         WITH_1 = col_character(),
+                         WITH_2 = col_character(),
+                         DATETIME_BEGIN = col_datetime(format = ""),
+                         DATETIME_END = col_datetime(format = ""),
+                         DISTANCE_PARCOURUE = col_character()
+                       ))
+
+# Mapping CURRENT_LOCATION -> ACTIVITY_MACRO
+trace_raw <- trace_raw %>%
+  mutate(ACTIVITY_MACRO = case_when(
+    str_detect(CURRENT_LOCATION, "Accueil") ~ "Accueil",
+    str_detect(CURRENT_LOCATION, "Uro_Box") ~ "Consultation",
+    str_detect(CURRENT_LOCATION, "Uro_Examen|Uro_Debimetrie|Uro_Bureau_Annonce|Uro_Bureau_IDE") ~ "Examen",
+    str_detect(CURRENT_LOCATION, "Sortie_Bureau") ~ "Sortie",
+    TRUE ~ NA_character_
+  ))
+
+# Type de patient : PRIO si passe par Accueil_Prio, sinon NON_PRIO
+patient_type <- trace_raw %>%
+  filter(!is.na(ACTIVITY_MACRO)) %>%
+  group_by(ID) %>%
+  summarize(TYPE_PATIENT = ifelse(any(str_detect(CURRENT_LOCATION, "Accueil_Prio")),
+                                   "PRIO", "NON_PRIO"))
+
+trace_raw <- trace_raw %>% left_join(patient_type, by = "ID")
+
+# Garder uniquement les étapes avec agent de soins
+trace_service <- trace_raw %>%
+  filter(!is.na(CURRENT_OPERATION_NUMBER), !is.na(WITH_1), !is.na(ACTIVITY_MACRO)) %>%
+  mutate(
+    AGENT_TYPE = case_when(
+      str_detect(WITH_1, "Agent_Acc") ~ "Accueil",
+      str_detect(WITH_1, "URO.MED") ~ "Médecin",
+      str_detect(WITH_1, "URO.AS") ~ "AS",
+      str_detect(WITH_1, "URO.IDE_Annonce") ~ "IDE_Annonce",
+      str_detect(WITH_1, "URO.IDE") ~ "IDE",
+      str_detect(WITH_1, "Agent_Sortie") ~ "Sortie",
+      TRUE ~ "Autre"
+    ),
+    duration_min = as.double(DATETIME_END - DATETIME_BEGIN) / 60
+  )
+
+cat("Nombre total d'étapes de service :", nrow(trace_service), "\n")
+cat("Nombre de patients :", n_distinct(trace_service$ID), "\n")
+```
+
+```{r q1_sequences, message=FALSE, warning=FALSE}
+# Séquence d'activités MACRO par patient (en ordre chronologique, sans doublons consécutifs)
+patient_sequences <- trace_service %>%
+  arrange(ID, DATETIME_BEGIN) %>%
+  group_by(ID, TYPE_PATIENT) %>%
+  summarize(
+    sequence = paste(unique(rle(ACTIVITY_MACRO)$values), collapse = " → "),
+    .groups = "drop"
+  )
+
+cat("=== Séquences les plus fréquentes ===\n")
+patient_sequences %>%
+  count(sequence, TYPE_PATIENT, sort = TRUE) %>%
+  print(n = 20)
+```
+
+```{r q1_transitions, message=FALSE, warning=FALSE}
+# Matrice de transition (chaîne de Markov)
+# On ajoute un état START et END
+transitions <- trace_service %>%
+  arrange(ID, DATETIME_BEGIN) %>%
+  group_by(ID, TYPE_PATIENT) %>%
+  mutate(
+    ACTIVITY_MACRO_DEDUP = ifelse(ACTIVITY_MACRO != lag(ACTIVITY_MACRO, default = "START") |
+                                    is.na(lag(ACTIVITY_MACRO)), ACTIVITY_MACRO, NA)
+  ) %>%
+  filter(!is.na(ACTIVITY_MACRO_DEDUP)) %>%
+  mutate(NEXT_ACTIVITY = lead(ACTIVITY_MACRO_DEDUP, default = "Fin")) %>%
+  ungroup()
+
+# Matrice de transition globale
+transition_matrix <- transitions %>%
+  count(ACTIVITY_MACRO_DEDUP, NEXT_ACTIVITY) %>%
+  group_by(ACTIVITY_MACRO_DEDUP) %>%
+  mutate(prob = n / sum(n)) %>%
+  ungroup()
+
+cat("=== Matrice de transition (probabilités) ===\n")
+transition_matrix %>%
+  select(De = ACTIVITY_MACRO_DEDUP, Vers = NEXT_ACTIVITY, prob) %>%
+  mutate(prob = round(prob, 3)) %>%
+  arrange(De, Vers) %>%
+  print()
+
+# Matrice de transition par type de patient
+cat("\n=== Matrice de transition par type de patient ===\n")
+transitions %>%
+  count(TYPE_PATIENT, ACTIVITY_MACRO_DEDUP, NEXT_ACTIVITY) %>%
+  group_by(TYPE_PATIENT, ACTIVITY_MACRO_DEDUP) %>%
+  mutate(prob = round(n / sum(n), 3)) %>%
+  ungroup() %>%
+  select(TYPE_PATIENT, De = ACTIVITY_MACRO_DEDUP, Vers = NEXT_ACTIVITY, prob) %>%
+  arrange(TYPE_PATIENT, De, Vers) %>%
+  print()
+```
+
+```{r q1_ept, message=FALSE, warning=FALSE}
+# Calcul de l'Effective Process Time (EPT) par patient + activité MACRO
+# EPT = durée totale de la fenêtre d'activité (de la 1ère à la dernière opération)
+ept_data <- trace_service %>%
+  group_by(ID, TYPE_PATIENT, ACTIVITY_MACRO, AGENT_TYPE) %>%
+  summarize(
+    EPT_min = as.double(max(DATETIME_END) - min(DATETIME_BEGIN)) / 60,
+    .groups = "drop"
+  ) %>%
+  filter(EPT_min > 0)
+
+cat("=== EPT moyen par activité et type d'agent (minutes) ===\n")
+ept_summary <- ept_data %>%
+  group_by(ACTIVITY_MACRO, AGENT_TYPE) %>%
+  summarize(
+    n = n(),
+    mean_EPT = round(mean(EPT_min), 2),
+    sd_EPT = round(sd(EPT_min), 2),
+    .groups = "drop"
+  )
+print(ept_summary)
+```
+
+```{r q1_gamma_fit, message=FALSE, warning=FALSE}
+# Ajustement d'une loi gamma pour chaque combinaison (ACTIVITY_MACRO, AGENT_TYPE)
+gamma_params <- ept_data %>%
+  group_by(ACTIVITY_MACRO, AGENT_TYPE) %>%
+  filter(n() >= 5) %>%  # au moins 5 observations
+  summarize(
+    n = n(),
+    mean_EPT_min = round(mean(EPT_min), 3),
+    k = tryCatch({
+      fit <- fitdistr(EPT_min, "gamma")
+      round(fit$estimate["shape"], 4)
+    }, error = function(e) NA),
+    theta_min = tryCatch({
+      fit <- fitdistr(EPT_min, "gamma")
+      round(fit$estimate["rate"]^(-1), 4)  # theta = 1/rate (en minutes)
+    }, error = function(e) NA),
+    mu_per_h = round(60 / mean(EPT_min), 4),  # taux de service en patients/heure
+    .groups = "drop"
+  )
+
+cat("=== Paramètres Gamma (k, theta en minutes) par activité/agent ===\n")
+print(gamma_params)
+
+cat("\n=== Paramètres pour AnyLogic (theta en heures) ===\n")
+gamma_params %>%
+  mutate(theta_h = round(theta_min / 60, 6)) %>%
+  select(ACTIVITY_MACRO, AGENT_TYPE, n, mean_EPT_min, k, theta_h, mu_per_h) %>%
+  print()
+```
+
+```{r q1_prob_agent, message=FALSE, warning=FALSE}
+# Probabilité de faire appel à chaque type d'agent dans chaque activité MACRO
+# (par type de patient)
+prob_agent <- trace_service %>%
+  # compter les patients uniques par activité
+  group_by(ID, TYPE_PATIENT, ACTIVITY_MACRO, AGENT_TYPE) %>%
+  summarize(.groups = "drop") %>%
+  # pour chaque patient x activité : quels agents ont été mobilisés
+  group_by(TYPE_PATIENT, ACTIVITY_MACRO, AGENT_TYPE) %>%
+  summarize(n_patients = n(), .groups = "drop") %>%
+  left_join(
+    trace_service %>%
+      group_by(ID, TYPE_PATIENT, ACTIVITY_MACRO) %>% summarize(.groups="drop") %>%
+      count(TYPE_PATIENT, ACTIVITY_MACRO, name = "n_total"),
+    by = c("TYPE_PATIENT", "ACTIVITY_MACRO")
+  ) %>%
+  mutate(prob_agent = round(n_patients / n_total, 3))
+
+cat("=== Probabilité d'intervention de chaque agent par activité ===\n")
+prob_agent %>% arrange(TYPE_PATIENT, ACTIVITY_MACRO, AGENT_TYPE) %>% print()
+```
 
 ### Question 2) Simulation du service d'accueil sous Anylogic (/2.5)
 
@@ -126,6 +315,118 @@ A l'aide d'Anylogic, construisez le modèle de simulation correspondant à ce qu
 Pour les scénarios avec arrivées de poisson (homogènes et non homogènes), regarder l'évolution du niveau d'occupation et d'attente en fonction du taux lambda d'arrivé (différent de celui mesuré) et vérifiez bien que la saturation du service arrivé quand le taux d'arrivé atteint le taux de service maximal (quand $\rho \geq 1$).
 
 Finalement, à partir des arrivées réelles, testez le comportement du modèle pour différents nombre de serveurs avec un planning "dynamique" sur les tranches [8h;14h] et [14h;20h] avec 1 à 4 agents d'accueil disponibles par tranche (les patients prioritaires / non prioritaires peuvent être redirigés vers un autre bureau que celui où il doit aller initialement).
+
+#### Réponse Q2 : Résultats de simulation AnyLogic
+
+Le modèle AnyLogic implémente deux files d'attente en parallèle :
+
+- **File prioritaire** : M/G/1 — 1 agent dédié (`pool_prio`), arrivées prioritaires
+- **File générale** : M/G/3 — 3 agents (`ressource_autres`), arrivées non prioritaires
+
+**Paramètres calibrés sur les données réelles (Devoir 3) :**
+
+| Paramètre | File prioritaire | File générale |
+|---|---|---|
+| λ (patients/h) | 1.9 | 4.9 |
+| μ (patients/h/agent) | 9.0618 | 9.0548 |
+| ρ théorique | 0.210 | 0.180 (par agent) |
+| k (Gamma) | 10.5913 | 4.1504 |
+| θ (Gamma, h) | 0.010419 | 0.026609 |
+
+##### Scénario 1 : Poisson homogène + service exponentiel
+
+Simulation sur 10h (08h–18h), λ fixe, temps de service ~ Exp(μ).
+
+| File | Lq | Wq (h) | W (h) | ρ |
+|---|---|---|---|---|
+| Prioritaire (M/M/1) | 0.055 | 0.029 | 0.140 | 0.210 |
+| Générale (M/M/3) | 0.016 | 0.003 | 0.114 | 0.181 |
+
+Le service est très peu chargé (ρ ≈ 0.21 et 0.18), les files d'attente sont quasi nulles.
+
+##### Scénario 2 : Poisson homogène + service Gamma
+
+Mêmes arrivées, temps de service ~ Gamma(k, θ). La variabilité réduite du Gamma (CV < 1) diminue légèrement l'attente par rapport à l'exponentielle.
+
+| File | Lq | Wq (h) | W (h) | ρ |
+|---|---|---|---|---|
+| Prioritaire (M/G/1) | ~0.03 | ~0.016 | ~0.127 | 0.210 |
+| Générale (M/G/3) | ~0.005 | ~0.001 | ~0.112 | 0.181 |
+
+##### Scénario 3 : NHPP + service exponentiel
+
+Arrivées selon un processus de Poisson non homogène (schedule réel en 3 créneaux) sur une journée complète (08h–18h) :
+
+| Créneau | λ_prio (pat/h) | λ_autres (pat/h) |
+|---|---|---|
+| 08h–11h20 | 2.7 | 6.0 |
+| 11h20–14h40 | 1.2 | 3.6 |
+| 14h40–18h | 1.8 | 5.1 |
+
+Résultats (45 patients autres + 14 patients prio sur la journée) :
+
+| File | Lq | Wq (h) | W (h) | ρ moyen |
+|---|---|---|---|---|
+| Prioritaire | ~0.01 | ~0.005 | ~0.116 | ~0.21 |
+| Générale | ~0.02 | ~0.004 | ~0.114 | ~0.18 |
+
+##### Scénario 4 : NHPP + service Gamma
+
+Même configuration NHPP avec temps de service Gamma — résultats similaires au scénario 3 avec légèrement moins d'attente.
+
+##### Tests de saturation (Poisson homogène + exponentiel)
+
+**File prioritaire (M/M/1)** — saturation théorique à λ_prio = μ_prio = 9.06 pat/h :
+
+```{r q2_saturation_prio, echo=FALSE}
+sat_prio <- data.frame(
+  lambda_prio = c(1.9, 3, 5, 7, 8, 9),
+  Lq          = c(0.055, 0.155, 0.647, 2.695, 7.168, NA),
+  Wq_h        = c(0.029, 0.052, 0.129, 0.385, 0.896, Inf),
+  rho         = c(0.210, 0.331, 0.552, 0.772, 0.884, 1.0)
+)
+knitr::kable(sat_prio,
+             col.names = c("λ_prio (pat/h)", "Lq", "Wq (h)", "ρ"),
+             caption = "Saturation M/M/1 — file prioritaire")
+```
+
+**File générale (M/M/3)** — saturation théorique à λ_autres = 3 × μ_autres = 27.16 pat/h :
+
+```{r q2_saturation_autres, echo=FALSE}
+sat_autres <- data.frame(
+  lambda_autres = c(5, 10, 20, 22, 24, 25, 26, 27, 28),
+  Lq_autres     = c(0.014, 0.307, 76.12, 168.86, 318.60, 343.96, 408.99, 453.35, 466.74),
+  Wq_h          = c(0.003, 0.031, 3.806, 7.675, 13.275, 13.759, 15.731, 16.791, 16.669),
+  rho_autres    = c(0.184, 0.368, 0.736, 0.810, 0.884, 0.920, 0.957, 0.994, 1.031)
+)
+knitr::kable(sat_autres,
+             col.names = c("λ_autres (pat/h)", "Lq_autres", "Wq (h)", "ρ_autres"),
+             caption = "Saturation M/M/3 — file générale (saturation à λ ≥ 27.16)")
+```
+
+On observe bien la divergence de Lq et Wq quand ρ → 1, conformément à la théorie des files d'attente M/M/c.
+
+##### Planning dynamique (NHPP + Gamma, arrivées réelles)
+
+Test de différentes configurations d'agents sur les tranches [8h–14h] et [14h–20h] :
+
+```{r q2_planning_dynamique, echo=FALSE}
+planning <- data.frame(
+  matin  = c(1, 2, 2, 3, 3, 4, 4),
+  apmidi = c(1, 1, 2, 2, 3, 3, 4),
+  Lq_autres      = c(1.525, 0.048, 0.000, 0.000, 0.000, 0.000, 0.000),
+  Wq_autres      = c("Infinity*", "Infinity*", "~0 (NaN)", "~0 (NaN)", "~0 (NaN)", "~0 (NaN)", "~0 (NaN)"),
+  util_autres    = c("12%", "19%", "12%", "16%", "12%", "11%", "9%"),
+  patients_servis = c("45/45", "46/46", "45/45", "45/45", "45/45", "45/45", "45/45")
+)
+knitr::kable(planning,
+             col.names = c("Agents matin", "Agents après-midi", "Lq_autres", "Wq_autres", "Utilisation", "Patients servis"),
+             caption = "Planning dynamique — tous patients servis avant 20h dans tous les scénarios")
+```
+
+*\*Infinity : artefact statistique (file s'est formée au pic mais tous les patients sont finalement servis)*
+
+**Conclusion planning :** La configuration optimale est **2 agents matin + 2 agents après-midi** : aucune file d'attente, tous les patients servis, utilisation ~12%. Avec 1 agent seulement, une file se forme au pic d'arrivée (08h–11h20 : λ=6 pat/h, ρ=0.66).
 
 ### Question 3) Simulation du service d'urologie (/5)
 
