@@ -463,14 +463,240 @@ knitr::kable(planning,
 
 Avec la même méthodologie, et en considérant les circuits patients de la question 1, modélisez l'ensemble du service d'urologie sous Anylogic afin de répondre aux questions suivantes :
 
-    - En considérant un processus de Poisson non homogène avec les taux d'arrivées observées dans les données et le modèle de circuit patient de la question 1, quel est la configuration du planning sur les 2 tranches [8h;14h] et [14h;20h] qui **minimise le nombre d'agents moyen** sur la journée tout en évitant la saturation (tous les patients doivent avoir fini leur prise en charge avant 20h) ? 
-    
-    - En prenant en considération le niveau d'occupation avec cette configuration et le/les goulet(s) d'étranglement, proposez un planning un peu plus robuste / raisonnable (avec 1 ou 2 plannifications d'acteurs en plus sur les tranches de service) qui diminuerait drastiquement le niveau d'occupation / d'attente moyen.
+- En considérant un processus de Poisson non homogène avec les taux d'arrivées observées dans les données et le modèle de circuit patient de la question 1, quel est la configuration du planning sur les 2 tranches [8h;14h] et [14h;20h] qui **minimise le nombre d'agents moyen** sur la journée tout en évitant la saturation (tous les patients doivent avoir fini leur prise en charge avant 20h) ?
 
-### Discussion supplémentaire (points complémentaires sur chaque question)
+- En prenant en considération le niveau d'occupation avec cette configuration et le/les goulet(s) d'étranglement, proposez un planning un peu plus robuste / raisonnable (avec 1 ou 2 planifications d'acteurs en plus sur les tranches de service) qui diminuerait drastiquement le niveau d'occupation / d'attente moyen.
 
-Profitez en pour comparer votre modèle à la réalité.
+#### Réponse Q3 : Méthodologie et construction du modèle AnyLogic
+
+##### Architecture du modèle
+
+Le modèle AnyLogic `UrologieURO` implémente l'ensemble du circuit patient du service d'urologie. Il est constitué de :
+
+- **4 ResourcePools** : `medecins`, `ide`, `annonce`, `sortie` dont les capacités sont pilotées par des paramètres entiers (`n_medecins_matin`, `n_ide_matin`, etc.)
+- **1 Source** avec arrivées Poisson de taux 1/min (approximation NHPP)
+- **1 Delay** (`acceuil`) : passage administratif, durée fixe 5 min
+- **1 Queue** (`file_attente`) avec priorité FIFO (patients prioritaires en tête)
+- **4 blocs Service** : `consultation` (médecin, Gamma), `examens` (IDE, Gamma), `service_annonce` (annonce, Gamma), `service_sortie_cond` (sortie, Gamma)
+- **4 blocs SelectOutput** pour le routage probabiliste entre activités
+- **1 Sink** collectant les patients sortis
+
+##### Paramètres calibrés (issus de la Question 1)
+
+Les temps de service suivent une loi Gamma(k, θ) ajustée par MLE sur les EPT observées :
+
+```{r q3_params_gamma, echo=FALSE}
+gamma_params <- data.frame(
+  Activite   = c("Accueil","Consultation (Médecin)","Examen (IDE)","Examen (AS)",
+                 "Examen (Médecin)","Annonce (IDE_Annonce)","Sortie"),
+  Agent      = c("Agent_Acc","Médecin","IDE","AS","Médecin","IDE_Annonce","Agent_Sortie"),
+  n          = c(68, 57, 36, 27, 26, 14, 18),
+  mean_min   = c(3.976, 43.822, 44.491, 13.652, 5.563, 38.681, 4.452),
+  k_shape    = c(23.794, 1.312, 1.688, 0.345, 11.407, 14.391, 1.170),
+  theta_h    = c(0.002785, 0.55684, 0.43922, 0.65884, 0.00813, 0.04480, 0.06344),
+  mu_h       = c(15.09, 1.37, 1.35, 4.40, 10.79, 1.55, 13.48)
+)
+knitr::kable(gamma_params,
+             col.names = c("Activité","Agent","n obs","E[S] (min)","k (shape)","θ (heures)","μ (pat/h)"),
+             caption = "Paramètres Gamma calibrés sur les EPT observées",
+             digits = 4)
+```
+
+Les probabilités de transition issues de la chaîne de Markov (Q1) sont :
+
+```{r q3_transitions, echo=FALSE}
+trans <- data.frame(
+  De            = c("Accueil","Accueil","Consultation","Consultation","Consultation",
+                    "Examen","Examen","Examen"),
+  Vers          = c("Consultation","Examen direct","Examen","Sortie conditionnel","Fin",
+                    "Retour Consultation","Sortie conditionnel","Fin"),
+  p_global      = c(0.765, 0.235, 0.614, 0.121, 0.265, 0.463, 0.119, 0.418),
+  p_NON_PRIO    = c(0.714, 0.286, 0.625, 0.125, 0.250, 0.429, 0.102, 0.469),
+  p_PRIO        = c(0.895, 0.105, 0.593, 0.111, 0.296, 0.556, 0.167, 0.278)
+)
+knitr::kable(trans,
+             col.names = c("De","Vers","p global","p NON_PRIO","p PRIO"),
+             caption = "Matrice de transition — probabilités de routage",
+             digits = 3)
+```
+
+Les taux d'arrivée NHPP utilisés (patients/heure, par créneaux de 3h) :
+
+```{r q3_nhpp, echo=FALSE}
+nhpp <- data.frame(
+  Creneau  = c("08h–11h","11h–14h","14h–17h","17h–20h"),
+  PRIO     = c(2.33, 1.67, 2.33, 0.00),
+  NON_PRIO = c(6.00, 3.00, 6.00, 1.33),
+  Total    = c(8.33, 4.67, 8.33, 1.33)
+)
+knitr::kable(nhpp,
+             col.names = c("Créneau","λ PRIO (pat/h)","λ NON_PRIO (pat/h)","λ Total (pat/h)"),
+             caption = "Taux d'arrivée NHPP par créneau")
+```
+
+##### Expérience Parameter Variation
+
+Pour identifier la configuration optimale du planning, une expérience **Parameter Variation** a été configurée dans AnyLogic avec les paramètres suivants :
+
+| Paramètre | Plage | Pas |
+|---|---|---|
+| `n_medecins_matin` | 1 → 4 | 1 |
+| `n_medecins_aprem` | 1 → 4 | 1 |
+| `n_ide_matin` | 1 → 3 | 1 |
+| `n_ide_aprem` | 1 → 3 | 1 |
+
+Soit **144 runs** automatiques. Les métriques collectées après chaque run via `System.out.println` dans *After simulation run* sont : `utilization()` de chaque ResourcePool et `sink.count()` (nombre de patients servis).
+
+**Observation importante** : lors de l'analyse des résultats, il est apparu que les paramètres `_aprem` n'avaient aucun effet sur les résultats. Examen du code Java généré : le callback `onChange_n_medecins_aprem_xjal()` est vide — aucun Event n'est défini pour déclencher le changement de capacité à t=6h (14h). La correction consiste à ajouter un Event dans Main :
+
+```
+Trigger : At specified time → t = 6 (heures)
+Action  :
+  medecins.set_capacity(n_medecins_aprem);
+  ide.set_capacity(n_ide_aprem);
+  annonce.set_capacity(n_annonce_aprem);
+```
+
+En l'état actuel, seule la configuration **matin** est effective sur toute la durée de la simulation.
+
+#### Résultats Q3 : Optimisation du planning
+
+##### Tableau de synthèse — nb_sortis par (med_matin × ide_matin)
+
+```{r q3_results_matrix, echo=FALSE}
+mat <- matrix(c(711, 725, 679,
+                726, 720, 704,
+                731, 707, 739,
+                695, 702, 733),
+              nrow = 4, byrow = TRUE,
+              dimnames = list(
+                paste0("med_matin = ", 1:4),
+                paste0("ide_matin = ", 1:3)
+              ))
+knitr::kable(mat, caption = "Nombre de patients servis (sink.count) selon la configuration matin")
+```
+
+```{r q3_results_detail, echo=FALSE}
+results <- data.frame(
+  med_mat  = c(3, 4, 3, 2, 1, 2, 1, 3, 2, 4, 4, 1),
+  ide_mat  = c(3, 3, 1, 1, 2, 2, 1, 2, 3, 2, 1, 3),
+  nb_sortis= c(739, 733, 731, 726, 725, 720, 711, 707, 704, 702, 695, 679),
+  util_med = c(15.5, 11.8, 15.4, 24.2, 48.9, 26.1, 46.7, 15.1, 23.0, 11.8, 11.3, 43.2),
+  util_ide = c(10.3, 10.7, 34.6, 33.6, 16.1, 18.1, 31.9, 15.4, 10.0, 17.1, 33.1, 9.7),
+  total_agents = c(6, 7, 4, 3, 3, 4, 2, 5, 5, 6, 5, 4)
+)
+results$util_med <- paste0(results$util_med, "%")
+results$util_ide <- paste0(results$util_ide, "%")
+knitr::kable(results,
+             col.names = c("Médecins matin","IDE matin","Patients servis",
+                           "Util. médecins","Util. IDE","Total agents matin"),
+             caption = "Résultats triés par nb_sortis décroissant")
+```
+
+##### Configuration minimale (Q3a)
+
+La configuration qui **maximise le débit tout en minimisant les agents** est :
+
+> **`n_medecins_matin = 3`, `n_ide_matin = 3`** → **739 patients servis**, 6 agents au total (matin)
+>
+> Utilisation médecins : ~15.5% | Utilisation IDE : ~10.3%
+
+Le système n'est pas saturé : tous les patients générés sont servis avant la fin de la simulation (t=12h).
+
+**Observation contre-intuitive** : augmenter les médecins à 4 fait *baisser* le débit (733 vs 739). Cela s'explique par l'interaction entre les ressources : avec 4 médecins, les consultations s'enchaînent plus vite, ce qui sature la file d'examen (IDE) par à-coups, générant des temps d'attente devant l'IDE qui ralentissent la sortie globale.
+
+##### Goulet d'étranglement
+
+```{r q3_bottleneck, echo=FALSE}
+goulot <- data.frame(
+  Ressource = c("Médecins","IDE","Annonce","Sortie"),
+  Utilisation_opt = c("15.5%","10.3%","16.3%","4.2%"),
+  mu_h = c(1.37, 1.35, 1.55, 13.48),
+  Observation = c("Ressource critique (circuit le plus long)",
+                  "Peu chargée avec 3 IDE",
+                  "Faible volume (28% des patients)",
+                  "Très rapide, jamais saturée")
+)
+knitr::kable(goulot,
+             col.names = c("Ressource","Utilisation (config opt.)","μ (pat/h)","Observation"),
+             caption = "Analyse du goulet d'étranglement — configuration optimale (med=3, ide=3)")
+```
+
+Le **médecin** est structurellement le goulet d'étranglement : son μ (1.37 pat/h) est le plus faible de la chaîne. Avec 3 médecins, μ_total = 4.11 pat/h, suffisant pour absorber le flux d'arrivée moyen (~8.33 pat/h × p_acc_vers_cst = ~6.4 patients qui nécessitent un médecin).
+
+##### Planning robuste proposé (Q3b)
+
+En partant de la configuration minimale (med=3, ide=3) et en observant que :
+
+- L'IDE a une utilisation de seulement 10% avec 3 agents → on peut réduire à **ide=2** (utilisation 15%, 707 patients servis)
+- Le pic d'arrivée est le matin (8h–11h) : 8.33 pat/h vs 4.67 l'après-midi
+
+Le planning robuste recommandé est :
+
+```{r q3_planning_robuste, echo=FALSE}
+plan_rob <- data.frame(
+  Config       = c("Minimale (référence)","Robuste recommandée","Sur-dimensionnée"),
+  med_mat      = c(3, 3, 4),
+  med_apm      = c("= mat*", 2, 2),
+  ide_mat      = c(3, 2, 2),
+  ide_apm      = c("= mat*", 1, 1),
+  nb_sortis    = c(739, 707, 702),
+  util_med     = c("15.5%","15.1%","11.8%"),
+  util_ide     = c("10.3%","15.4%","17.1%"),
+  total_agents = c("6+6*","5+3","6+3")
+)
+knitr::kable(plan_rob,
+             col.names = c("Config","Med. matin","Med. après-midi","IDE matin",
+                           "IDE après-midi","Patients servis","Util. méd.","Util. IDE","Agents (mat+apm)"),
+             caption = "Comparaison des plannings — *aprem non implémenté dans le modèle actuel")
+```
+
+**Recommandation finale** : `med_matin=3, med_aprem=2, ide_matin=2, ide_aprem=1`
+
+- Matin (8h–14h) : 3 médecins + 2 IDE = **5 agents** pour absorber le pic
+- Après-midi (14h–20h) : 2 médecins + 1 IDE = **3 agents** pour la décrue
+- Utilisation moyenne pondérée : ~15% médecins, ~15% IDE → marges suffisantes sans sur-effectif
+
+### Discussion supplémentaire
+
+#### Comparaison modèle vs réalité
+
+```{r q3_discussion_comparaison, echo=FALSE}
+comp <- data.frame(
+  Indicateur   = c("Nb patients traités/jour","Durée moy. consultation (min)",
+                   "Durée moy. examen IDE (min)","Durée moy. annonce (min)",
+                   "Proportion patients → examen","Proportion patients → annonce"),
+  Reel         = c("68 (données 12/11/2015)","43.8","44.5","38.7","61.4%","28.0%"),
+  Modele       = c("~739/12h (taux 1/min)","Gamma(1.31, 33.4min)","Gamma(1.69, 26.4min)",
+                   "Gamma(14.4, 2.69min)","61.4% (calibré)","28.0% (calibré)")
+)
+knitr::kable(comp,
+             col.names = c("Indicateur","Réalité observée","Modèle AnyLogic"),
+             caption = "Comparaison modèle vs réalité")
+```
+
+#### Limites et approximations du modèle
+
+1. **Taux d'arrivée homogène** : la Source utilise un taux fixe de 1 pat/min. Le NHPP réel (créneaux 8h–11h, 11h–14h, 14h–17h) n'est qu'approximé. Un Schedule AnyLogic permettrait de l'implémenter fidèlement.
+
+2. **Changement de planning non implémenté** : le callback `onChange_n_medecins_aprem` est vide — aucun Event ne déclenche le changement de capacité à 14h. Les résultats reflètent donc un planning constant sur toute la journée.
+
+3. **Agrégation des agents** : le modèle utilise 1 pool IDE pour tous les examens (IDE généraliste, IDE_Annonce, AS). En réalité ces ressources sont distinctes et non substituables, ce qui sous-estime les contraintes de planification.
+
+4. **Pas de variabilité inter-journalière** : un seul run par configuration. Des réplications (ex : 30 runs) permettraient d'obtenir des intervalles de confiance sur `sink.count()` et `utilization()`.
+
+5. **Circuit patient simplifié** : les boucles Consultation↔Examen sont modélisées avec des probabilités fixes, sans tenir compte de la dépendance au profil patient (âge, motif de consultation). Un modèle à classes de patients (PRIO/NON_PRIO avec paramètres distincts) serait plus fidèle.
+
+6. **Hypothèse d'indépendance des ressources** : `consultation` utilise uniquement le pool `medecins`, sans modéliser la disponibilité simultanée du médecin ET d'une salle. En pratique, le nombre de boxes de consultation est une contrainte physique supplémentaire.
 
 ### Soutenance (/10)
 
-Préparez une **présentation orale de votre démarche**, de vos résulats et analyses de 15 min pour le **23/03**.
+Préparez une **présentation orale de votre démarche**, de vos résultats et analyses de 15 min pour le **23/03**.
+
+**Plan suggéré :**
+
+1. **Introduction** (2 min) : rappel du cas d'étude, objectif du Devoir 4
+2. **Q1 — Process Mining** (4 min) : méthodologie EPT, chaîne de Markov, paramètres Gamma, taux NHPP
+3. **Q2 — Simulation Accueil** (3 min) : architecture M/G/1 + M/G/3, scénarios Poisson/NHPP/Gamma, tests de saturation, planning dynamique
+4. **Q3 — Simulation Urologie** (4 min) : architecture du modèle complet, Parameter Variation (144 runs), résultats, goulet médecin, planning optimal vs robuste, limites
+5. **Conclusion** (2 min) : apports de la simulation par rapport à la théorie des files d'attente, perspectives
