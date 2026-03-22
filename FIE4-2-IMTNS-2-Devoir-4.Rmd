@@ -54,10 +54,10 @@ Toujours dans la continuité des précédant devoirs, l'objectif de ce dernier d
 3) Simulation du service d'urologie
 
 ```{r include=FALSE}
+library(MASS)  # charger avant tidyverse pour que dplyr::select() prenne le dessus
 library(tidyverse)
 library(data.table)
 library(readxl)
-library(MASS)  # pour fitdistr
 
 load("local_data/trace_example_1.RData")
 load("local_data/trace_example_final.RData")
@@ -214,7 +214,7 @@ cat("=== Matrice de transition (probabilités) ===\n")
 transition_matrix %>%
   mutate(prob = round(prob, 3)) %>%
   rename(De = ACTIVITY_MACRO_DEDUP, Vers = NEXT_ACTIVITY) %>%
-  select(De, Vers, prob) %>%
+  dplyr::select(De, Vers, prob) %>%
   arrange(De, Vers) %>%
   print()
 
@@ -226,7 +226,7 @@ transitions %>%
   mutate(prob = round(n / sum(n), 3)) %>%
   ungroup() %>%
   rename(De = ACTIVITY_MACRO_DEDUP, Vers = NEXT_ACTIVITY) %>%
-  select(TYPE_PATIENT, De, Vers, prob) %>%
+  dplyr::select(TYPE_PATIENT, De, Vers, prob) %>%
   arrange(TYPE_PATIENT, De, Vers) %>%
   print()
 ```
@@ -280,7 +280,7 @@ print(gamma_params)
 cat("\n=== Paramètres pour AnyLogic (theta en heures) ===\n")
 gamma_params %>%
   mutate(theta_h = round(theta_min / 60, 6)) %>%
-  select(ACTIVITY_MACRO, AGENT_TYPE, n, mean_EPT_min, k, theta_h, mu_per_h) %>%
+  dplyr::select(ACTIVITY_MACRO, AGENT_TYPE, n, mean_EPT_min, k, theta_h, mu_per_h) %>%
   print()
 ```
 
