@@ -212,8 +212,9 @@ transition_matrix <- transitions %>%
 
 cat("=== Matrice de transition (probabilités) ===\n")
 transition_matrix %>%
-  select(De = ACTIVITY_MACRO_DEDUP, Vers = NEXT_ACTIVITY, prob) %>%
   mutate(prob = round(prob, 3)) %>%
+  rename(De = ACTIVITY_MACRO_DEDUP, Vers = NEXT_ACTIVITY) %>%
+  select(De, Vers, prob) %>%
   arrange(De, Vers) %>%
   print()
 
@@ -224,7 +225,8 @@ transitions %>%
   group_by(TYPE_PATIENT, ACTIVITY_MACRO_DEDUP) %>%
   mutate(prob = round(n / sum(n), 3)) %>%
   ungroup() %>%
-  select(TYPE_PATIENT, De = ACTIVITY_MACRO_DEDUP, Vers = NEXT_ACTIVITY, prob) %>%
+  rename(De = ACTIVITY_MACRO_DEDUP, Vers = NEXT_ACTIVITY) %>%
+  select(TYPE_PATIENT, De, Vers, prob) %>%
   arrange(TYPE_PATIENT, De, Vers) %>%
   print()
 ```
