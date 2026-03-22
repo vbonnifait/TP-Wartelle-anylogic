@@ -232,10 +232,11 @@ transitions %>%
 ```{r q1_ept, message=FALSE, warning=FALSE}
 # Calcul de l'Effective Process Time (EPT) par patient + activité MACRO
 # EPT = durée totale de la fenêtre d'activité (de la 1ère à la dernière opération)
+# On force l'unité en minutes explicitement pour éviter l'ambiguïté de as.double(difftime)
 ept_data <- trace_service %>%
   group_by(ID, TYPE_PATIENT, ACTIVITY_MACRO, AGENT_TYPE) %>%
   summarize(
-    EPT_min = as.double(max(DATETIME_END) - min(DATETIME_BEGIN)) / 60,
+    EPT_min = as.numeric(difftime(max(DATETIME_END), min(DATETIME_BEGIN), units = "mins")),
     .groups = "drop"
   ) %>%
   filter(EPT_min > 0)
@@ -245,8 +246,8 @@ ept_summary <- ept_data %>%
   group_by(ACTIVITY_MACRO, AGENT_TYPE) %>%
   summarize(
     n = n(),
-    mean_EPT = round(mean(EPT_min), 2),
-    sd_EPT = round(sd(EPT_min), 2),
+    mean_EPT_min = round(mean(EPT_min), 2),
+    sd_EPT_min  = round(sd(EPT_min), 2),
     .groups = "drop"
   )
 print(ept_summary)
@@ -254,31 +255,34 @@ print(ept_summary)
 
 ```{r q1_gamma_fit, message=FALSE, warning=FALSE}
 # Ajustement d'une loi gamma pour chaque combinaison (ACTIVITY_MACRO, AGENT_TYPE)
+# Les données sont en MINUTES → theta_min en minutes, theta_h = theta_min / 60
 gamma_params <- ept_data %>%
   group_by(ACTIVITY_MACRO, AGENT_TYPE) %>%
   filter(n() >= 5) %>%  # au moins 5 observations
   summarize(
     n = n(),
-    mean_EPT_min = round(mean(EPT_min), 3),
+    mean_EPT_min = round(mean(EPT_min), 2),
     k = tryCatch({
       fit <- fitdistr(EPT_min, "gamma")
       round(fit$estimate["shape"], 4)
     }, error = function(e) NA),
     theta_min = tryCatch({
       fit <- fitdistr(EPT_min, "gamma")
-      round(fit$estimate["rate"]^(-1), 4)  # theta = 1/rate (en minutes)
+      round(1 / fit$estimate["rate"], 4)  # theta = 1/rate (en minutes)
     }, error = function(e) NA),
-    mu_per_h = round(60 / mean(EPT_min), 4),  # taux de service en patients/heure
+    mu_per_h = round(60 / mean(EPT_min), 2),  # patients/heure par ressource
     .groups = "drop"
-  )
+  ) %>%
+  mutate(theta_h = round(theta_min / 60, 6))  # conversion pour AnyLogic (heures)
 
-cat("=== Paramètres Gamma (k, theta en minutes) par activité/agent ===\n")
-print(gamma_params)
-
-cat("\n=== Paramètres pour AnyLogic (theta en heures) ===\n")
+cat("=== Paramètres Gamma — vérification cohérence (mean ≈ k × theta_min) ===\n")
 gamma_params %>%
-  mutate(theta_h = round(theta_min / 60, 6)) %>%
-  arrange(ACTIVITY_MACRO, AGENT_TYPE) %>%
+  mutate(mean_theorique = round(k * theta_min, 2)) %>%
+  as.data.frame() %>%
+  print()
+
+cat("\n=== Paramètres AnyLogic (Gamma : k et theta en HEURES) ===\n")
+gamma_params %>%
   as.data.frame() %>%
   print()
 ```
@@ -303,6 +307,32 @@ prob_agent <- trace_service %>%
 
 cat("=== Probabilité d'intervention de chaque agent par activité ===\n")
 prob_agent %>% arrange(TYPE_PATIENT, ACTIVITY_MACRO, AGENT_TYPE) %>% print()
+```
+
+```{r q1_nhpp, message=FALSE, warning=FALSE}
+# Taux d'arrivées NHPP par créneau horaire (pour Q3)
+# On prend l'heure de la 1ère étape de service de chaque patient comme heure d'arrivée
+arrivees <- trace_service %>%
+  group_by(ID, TYPE_PATIENT) %>%
+  summarize(heure_arrivee = min(DATETIME_BEGIN), .groups = "drop") %>%
+  mutate(heure = as.numeric(format(heure_arrivee, "%H")) +
+                 as.numeric(format(heure_arrivee, "%M")) / 60,
+         creneau = cut(heure,
+                       breaks = c(8, 11, 14, 17, 20),
+                       labels = c("08h-11h", "11h-14h", "14h-17h", "17h-20h"),
+                       right  = FALSE))
+
+cat("=== Taux d'arrivées par créneau (patients/heure) ===\n")
+arrivees %>%
+  count(TYPE_PATIENT, creneau) %>%
+  mutate(lambda = round(n / 3, 2)) %>%  # créneaux de 3h
+  as.data.frame() %>%
+  print()
+
+cat("\n=== Proportion PRIO / NON_PRIO ===\n")
+arrivees %>% count(TYPE_PATIENT) %>%
+  mutate(prop = round(n / sum(n), 3)) %>%
+  as.data.frame() %>% print()
 ```
 
 ### Question 2) Simulation du service d'accueil sous Anylogic (/2.5)
