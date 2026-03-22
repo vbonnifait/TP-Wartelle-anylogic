@@ -213,9 +213,8 @@ transition_matrix <- transitions %>%
 cat("=== Matrice de transition (probabilités) ===\n")
 transition_matrix %>%
   mutate(prob = round(prob, 3)) %>%
-  rename(De = ACTIVITY_MACRO_DEDUP, Vers = NEXT_ACTIVITY) %>%
-  dplyr::select(De, Vers, prob) %>%
-  arrange(De, Vers) %>%
+  arrange(ACTIVITY_MACRO_DEDUP, NEXT_ACTIVITY) %>%
+  as.data.frame() %>%
   print()
 
 # Matrice de transition par type de patient
@@ -225,9 +224,8 @@ transitions %>%
   group_by(TYPE_PATIENT, ACTIVITY_MACRO_DEDUP) %>%
   mutate(prob = round(n / sum(n), 3)) %>%
   ungroup() %>%
-  rename(De = ACTIVITY_MACRO_DEDUP, Vers = NEXT_ACTIVITY) %>%
-  dplyr::select(TYPE_PATIENT, De, Vers, prob) %>%
-  arrange(TYPE_PATIENT, De, Vers) %>%
+  arrange(TYPE_PATIENT, ACTIVITY_MACRO_DEDUP, NEXT_ACTIVITY) %>%
+  as.data.frame() %>%
   print()
 ```
 
@@ -280,7 +278,8 @@ print(gamma_params)
 cat("\n=== Paramètres pour AnyLogic (theta en heures) ===\n")
 gamma_params %>%
   mutate(theta_h = round(theta_min / 60, 6)) %>%
-  dplyr::select(ACTIVITY_MACRO, AGENT_TYPE, n, mean_EPT_min, k, theta_h, mu_per_h) %>%
+  arrange(ACTIVITY_MACRO, AGENT_TYPE) %>%
+  as.data.frame() %>%
   print()
 ```
 
